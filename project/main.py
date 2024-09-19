@@ -1,44 +1,48 @@
 import json
 from pathlib import Path
 
-def getRephrasals(path: str) -> dict:
+# Gets contractions.json content into a dict.
+# Parameters:
+# `path`: Path to the contractions JSON file.
+def getContractions(path: str) -> dict:
     f = open(path)
     data = json.load(f)
-    rephrasals = {}
+    contractions = {}
     for k, v in data.items():
         key = k.lower()
         for i in v:
-            rephrasals[i.lower()] = key
-    return rephrasals
+            contractions[i.lower()] = key
+    return contractions
 
-def rephraseComment(comment: str, rephrasals: dict) -> str:
+# Expands contractions like "don't" -> "do not".    
+def expandContractions(comment: str, contractions: dict) -> str:
     include = {"\'"}
-    rephrased_comment = ""
+    cleaned_comment = ""
     word = ""
     for i in range(len(comment)):
         ch = comment[i]
         if not ch.isalpha() and ch not in include:
             if len(word) > 0:
-                if word in rephrasals:
-                    word = rephrasals[word]
-                rephrased_comment += word
+                if word in contractions:
+                    word = contractions[word]
+                cleaned_comment += word
                 word = ""
-            rephrased_comment += ch
+            cleaned_comment += ch
             continue
         word += ch.lower()
         
     if len(word) > 0:
-        if word in rephrasals:
-            word = rephrasals[word]
-        rephrased_comment += word
+        if word in contractions:
+            word = contractions[word]
+        cleaned_comment += word
         word = ""
         
-    return rephrased_comment
+    return cleaned_comment
 
 def main():
     current_dir = Path(__file__).parent.resolve()
-    rephrasals = getRephrasals(Path.joinpath(current_dir, "rephrase.json"))
-    print(rephraseComment("Fuck you, you shouldn't do that", rephrasals))
+    contractions = getContractions(Path.joinpath(current_dir, "resources/contractions.json"))
+    print(expandContractions("Fuck you, you shouldn't do that", contractions))
 
 if __name__ == "__main__":
     main()

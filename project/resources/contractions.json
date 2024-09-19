@@ -1,4 +1,5 @@
 {
     "will not": ["wont", "won't"],
-    "should not": ["shouldnt", "shouldn't"]
+    "should not": ["shouldnt", "shouldn't"],
+    "do not": ["dont", "don't"]
 }
