@@ -5,3 +5,5 @@ project/__pycache__
 !.gitignore
 !test/
 !test/**
+!assets/
+!assets/**
