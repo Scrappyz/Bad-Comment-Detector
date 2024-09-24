@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 # from deep_translator import GoogleTranslator
 
+nlp = spacy.load("en_core_web_md")
+
 leet_map = {
     '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't',
     '@': 'a', '$': 's', '!': 'i', '*': '', '#': '', '(': 'c'
@@ -14,13 +16,16 @@ leet_map = {
 
 # Toxic keywords for the rule-based approach
 toxic_keywords = [
+    r'\b(?:f\W*[\*u]\W*c\W*k|fuck)\b',  # detects "f*ck", "f#ck", "fu*k", "fuck"
+    r'\b(?:sh\W*[\*i1!\|]\W*t|shit)\b',  # detects "$h1t", "sh*t", "s#it", "shit"
+    r'\b(?:a\W*[\*s]\W*[\*s]\W*hole|asshole)\b',  # detects "a**hole", "@$$hole"
     r'\bidiot\b', r'\bdumb\b', r'\bannoying\b', r'\bstupid\b',
     r'\bshut\s?up\b', r'\bjerk\b', r'\bfool\b', r'\btrash\b'
 ]
 
-def getTestCases(path: str) -> dict:
+def getTestCases(path) -> list:
     with open(path, "r") as f:
-        return json.load(f.read())
+        return json.load(f)
 
 def readTextFromFile(file_path: str) -> str:
     with open(file_path, 'r') as f:
@@ -83,33 +88,42 @@ def detectToxicity(text, nlp):
     return aiBasedDetection(cleaned_text, nlp)
 
 def main():
-    parser = argparse.ArgumentParser(description='Detect bad comment.')
-    parser.add_argument('-t', '--text', type=str, nargs=1,
-                         help='bad comment.')
-    parser.add_argument('-f', '--file', metavar='file', type=str, nargs=1,
-                         help='file input.')
+    # parser = argparse.ArgumentParser(description='Detect bad comment.')
+    # parser.add_argument('-t', '--text', type=str, nargs=1,
+    #                      help='bad comment.')
+    # parser.add_argument('-f', '--file', metavar='file', type=str, nargs=1,
+    #                      help='file input.')
     
-    args = parser.parse_args()
+    # args = parser.parse_args()
     
-    # Argument values
-    text = ''
-    current_dir = os.getcwd()
-    file_path = ''
+    # # Argument values
+    # text = ''
+    # current_dir = os.getcwd()
+    # file_path = ''
+    source_dir = Path(__file__).parent.resolve()
     
-    if args.file:
-        file_path = Path(current_dir).joinpath(args.file[0]).resolve()
-        text = readTextFromFile(file_path)
+    # if args.file:
+    #     file_path = Path(current_dir).joinpath(args.file[0]).resolve()
+    #     text = readTextFromFile(file_path)
         
-    if args.text:
-        text = args.text[0]
+    # if args.text:
+    #     text = args.text[0]
         
-    nlp = spacy.load("en_core_web_md")
+    test_cases = getTestCases(source_dir.parent.joinpath("assets/test_cases.json"))
+    
+    for i in test_cases:
+        comment = i["comment"]
+        expected_result = i["expected"]
+        is_toxic = detectToxicity(comment, nlp)
+        is_pass = ""
         
-    for comment in comments:
-        if detectToxicity(comment, nlp):
-            print(f"Toxic: {comment}")
+        if is_toxic and expected_result.lower() == "toxic" or not is_toxic and expected_result.lower() == "non-toxic":
+            is_pass = "Pass"
         else:
-            print(f"Non-Toxic: {comment}")
+            is_pass = "Fail"
+        
+        print("[{0}] {1}: {2}".format(is_pass, expected_result, comment))
+            
 
 if __name__ == "__main__":
     main()

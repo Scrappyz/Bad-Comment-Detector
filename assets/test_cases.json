@@ -1,69 +1,67 @@
-{
-    "test_cases": [
-        {
-            "comment": "You are such an idiot!!!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "Go f*ck yourself!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "@user You're being $h1t!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "Totally agree with you.",
-            "expected": "Non-Toxic"
-        },
-        {
-            "comment": "You piece of f*cking trash!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "You are a great person! 👍",
-            "expected": "Non-Toxic"
-        },
-        {
-            "comment": "Shut upppp!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "a**hole",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "This is so stuuuupid!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "Go to hell!!!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "Nice work, well done!",
-            "expected": "Non-Toxic"
-        },
-        {
-            "comment": "d@mn it!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "What a jerk!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "You're awesome!",
-            "expected": "Non-Toxic"
-        },
-        {
-            "comment": "Get lost, fool!",
-            "expected": "Toxic"
-        },
-        {
-            "comment": "Th1s 1s cr@p",
-            "expected": "Toxic"
-        }
-    ]
-}
+[
+    {
+        "comment": "You are such an idiot!!!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "Go f*ck yourself!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "@user You're being $h1t!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "Totally agree with you.",
+        "expected": "Non-Toxic"
+    },
+    {
+        "comment": "You piece of f*cking trash!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "You are a great person!",
+        "expected": "Non-Toxic"
+    },
+    {
+        "comment": "Shut upppp!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "a**hole",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "This is so stuuuupid!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "Go to hell!!!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "Nice work, well done!",
+        "expected": "Non-Toxic"
+    },
+    {
+        "comment": "d@mn it!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "What a jerk!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "You're awesome!",
+        "expected": "Non-Toxic"
+    },
+    {
+        "comment": "Get lost, fool!",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "Th1s 1s cr@p",
+        "expected": "Toxic"
+    }
+]
   
