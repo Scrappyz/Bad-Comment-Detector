@@ -1,6 +1,7 @@
 *
 !project/
 !project/**
+project/test.py
 project/__pycache__
 !.gitignore
 !test/
