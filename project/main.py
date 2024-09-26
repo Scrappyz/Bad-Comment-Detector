@@ -28,41 +28,23 @@ def readTextFromFile(file_path: str) -> str:
     with open(file_path, 'r') as f:
         return f.read()
     
-def fuzzyReplace(text, toxic_keywords, threshold=75) -> str:
-    words = text.split()
+def fuzzyReplace(words, keywords, threshold=75):
     for i in range(len(words)):
-        for toxic_word in toxic_keywords:
-            if fuzz.ratio(words[i], toxic_word) >= threshold:
-                words[i] = toxic_word
+        for word in keywords:
+            if fuzz.ratio(words[i], word) >= threshold:
+                words[i] = word
                 break
+
+def cleanTextAndTokenize(text) -> list:
+    tokens = nlp(text, disable=["parser", "tagger", "ner", "lemmatizer", "textcats"])
+    words = []
+    for token in tokens:
+        # Check if the token is alphanumeric (contains letters or digits)
+        if not re.fullmatch(r'^[\W_]+$', token.text):  # Matches tokens with only special characters
+            words.append(token.text)  # Append the actual text representation of the token
     
-    return " ".join(words)
-
-def cleanText(text):
-    """Clean the input text for better toxicity detection."""
-    # Lowercase the text
-    text = text.lower()
-
-    # Remove URLs
-    text = re.sub(r"http\S+|www\S+|https\S+", '', text, flags=re.MULTILINE)
-    
-    # Remove user mentions (@username)
-    text = re.sub(r'\@\w+', '', text)
-
-    # Normalize repeated characters (e.g., "stuuuupid" -> "stupid")
-    text = re.sub(r'(.)\1+', r'\1\1', text)
-
-    # Replace leetspeak characters carefully
-    for leet_char, alphabet in leet_map.items():
-        text = text.replace(leet_char, alphabet)
-    
-    # After replacing leetspeak characters, remove unwanted symbols
-    text = re.sub(r'[^a-z\s]', '', text)  # Keep only letters and spaces
-
-    # Strip any extra whitespace
-    text = text.strip()
-    
-    return text
+    fuzzyReplace(words, toxic_keywords, 50)
+    return words
 
 def ruleBasedDetection(text):
     """Detect toxicity using rule-based regex patterns."""
@@ -95,8 +77,9 @@ def detectToxicity(text, nlp):
 
 def main():
     """Main function to run toxicity detection on test cases."""
-    # source_dir = Path(__file__).parent.resolve()
-    # test_cases = getTestCases(source_dir.parent.joinpath("assets/test_cases.json"))
+    source_dir = Path(__file__).parent.resolve()
+    test_cases = getTestCases(source_dir.parent.joinpath("assets/test_cases.json"))
+    essay = readTextFromFile(source_dir.parent.joinpath("data/essay.txt").resolve())
     
     # for i in test_cases:
     #     comment = i["comment"]
@@ -106,7 +89,9 @@ def main():
         
     #     print("[{0}] ({1}): {2}".format(actual_result, expected_result, comment))
     
-    print(fuzzyReplace("you fck", toxic_keywords))
+    words = cleanTextAndTokenize(essay)
+    for i in words:
+        print(i)
 
 if __name__ == "__main__":
     main()
