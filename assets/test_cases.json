@@ -1,66 +1,82 @@
 [
     {
         "comment": "You are such an idiot!!!",
+        "cleaned": "you are such an idiot",
         "expected": "Toxic"
     },
     {
         "comment": "Go f*ck yourself!",
+        "cleaned": "go fuck yourself",
         "expected": "Toxic"
     },
     {
         "comment": "@user You're being $h1t!",
+        "cleaned": "you are being shit",
         "expected": "Toxic"
     },
     {
         "comment": "Totally agree with you.",
+        "cleaned": "totally agree with you",
         "expected": "Non-Toxic"
     },
     {
         "comment": "You piece of f*cking trash!",
+        "cleaned": "you piece of fucking trash",
         "expected": "Toxic"
     },
     {
         "comment": "You are a great person!",
+        "cleaned": "you are a great person",
         "expected": "Non-Toxic"
     },
     {
         "comment": "Shut upppp!",
+        "cleaned": "shut up",
         "expected": "Toxic"
     },
     {
         "comment": "a**hole",
+        "cleaned": "asshole",
         "expected": "Toxic"
     },
     {
         "comment": "This is so stuuuupid!",
+        "cleaned": "this is so stupid",
         "expected": "Toxic"
     },
     {
         "comment": "Go to hell!!!",
+        "cleaned": "go to hell",
         "expected": "Toxic"
     },
     {
         "comment": "Nice work, well done!",
+        "cleaned": "nice work well done",
         "expected": "Non-Toxic"
     },
     {
         "comment": "d@mn it!",
+        "cleaned": "damn it",
         "expected": "Toxic"
     },
     {
         "comment": "What a jerk!",
+        "cleaned": "what a jerk",
         "expected": "Toxic"
     },
     {
         "comment": "You're awesome!",
+        "cleaned": "you are awesome",
         "expected": "Non-Toxic"
     },
     {
         "comment": "Get lost, fool!",
+        "cleaned": "get lost fool",
         "expected": "Toxic"
     },
     {
         "comment": "Th1s 1s cr@p",
+        "cleaned": "this is crap",
         "expected": "Toxic"
     }
 ]

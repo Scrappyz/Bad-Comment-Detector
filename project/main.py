@@ -15,18 +15,14 @@ leet_map = {
     '@': 'a', '$': 's', '!': 'i', '*': '', '#': '', '(': 'c'
 }
 
-# Toxic keywords for rule-based detection with more flexibility
-toxic_keywords = {'fuck', 'shit', 'asshole', 'idiot', 'dumb', 'annoying', 'stupid', 'shut up', 'jerk', 'fool', 'trash'}
-
-def getTestCases(path) -> list:
-    """Load test cases from a JSON file."""
-    with open(path, "r") as f:
-        return json.load(f)
-
 def readTextFromFile(file_path: str) -> str:
     """Read text from a file."""
     with open(file_path, 'r') as f:
         return f.read()
+    
+def readJsonFromFile(file_path: str):
+    with open(file_path, "r") as f:
+        return json.load(f)
     
 def fuzzyReplace(words, keywords, threshold=75):
     for i in range(len(words)):
@@ -35,7 +31,7 @@ def fuzzyReplace(words, keywords, threshold=75):
                 words[i] = word
                 break
 
-def cleanTextAndTokenize(text) -> list:
+def cleanTextAndTokenize(text, keywords: set, threshold=75) -> list:
     tokens = nlp(text, disable=["parser", "tagger", "ner", "lemmatizer", "textcats"])
     words = []
     for token in tokens:
@@ -43,14 +39,14 @@ def cleanTextAndTokenize(text) -> list:
         if not re.fullmatch(r'^[\W_]+$', token.text):  # Matches tokens with only special characters
             words.append(token.text)  # Append the actual text representation of the token
     
-    fuzzyReplace(words, toxic_keywords, 50)
+    fuzzyReplace(words, keywords, threshold)
     return words
 
-def ruleBasedDetection(text):
+def ruleBasedDetection(tokens, keywords: set):
     """Detect toxicity using rule-based regex patterns."""
-    for keyword in toxic_keywords:
-        if re.search(keyword, text, re.IGNORECASE):
-            return True  # Found a toxic keyword
+    for i in tokens:
+        if i in keywords:
+            return True
     return False
 
 def aiBasedDetection(text, nlp):
@@ -63,35 +59,33 @@ def aiBasedDetection(text, nlp):
     
     return False
 
-def detectToxicity(text, nlp):
+def detectToxicity(text, keywords: set, nlp, threshold=75):
     """Hybrid approach combining rule-based and AI-based toxicity detection."""
     # Step 1: Clean the text
-    cleaned_text = cleanText(text)
+    tokens = cleanTextAndTokenize(text, keywords, threshold)
     
     # Step 2: Rule-based detection
-    if ruleBasedDetection(cleaned_text):
+    if ruleBasedDetection(tokens, keywords):
         return True  # Mark as toxic if rule-based approach detects it
     
     # Step 3: AI-based detection
-    return aiBasedDetection(cleaned_text, nlp)
+    return aiBasedDetection(" ".join(tokens), nlp)
 
 def main():
     """Main function to run toxicity detection on test cases."""
     source_dir = Path(__file__).parent.resolve()
-    test_cases = getTestCases(source_dir.parent.joinpath("assets/test_cases.json"))
+    asset_dir = source_dir.parent.joinpath("assets")
+    test_cases = list(readJsonFromFile(asset_dir.joinpath("test_cases.json")))
+    toxic_keywords = set(readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
     essay = readTextFromFile(source_dir.parent.joinpath("data/essay.txt").resolve())
     
-    # for i in test_cases:
-    #     comment = i["comment"]
-    #     expected_result = i["expected"]
-    #     is_toxic = detectToxicity(comment, nlp)
-    #     actual_result = "Toxic" if is_toxic else "Non-Toxic"
+    for i in test_cases:
+        comment = i["comment"]
+        expected_result = i["expected"]
+        is_toxic = detectToxicity(comment, toxic_keywords, nlp)
+        actual_result = "Toxic" if is_toxic else "Non-Toxic"
         
-    #     print("[{0}] ({1}): {2}".format(actual_result, expected_result, comment))
-    
-    words = cleanTextAndTokenize(essay)
-    for i in words:
-        print(i)
+        print("[{0}] ({1}): {2}".format(actual_result, expected_result, comment))
 
 if __name__ == "__main__":
     main()
