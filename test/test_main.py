@@ -15,7 +15,13 @@ test_cases = main.readJsonFromFile(test_cases_path)
 toxic_keywords = set(main.readJsonFromFile(toxic_keywords_path))
 
 class TestMain(unittest.TestCase):
-    def test_main(self):
+    def test_cleaning(self):
+        for i in test_cases:
+            if "cleaned" not in i:
+                continue
+            self.assertEqual(i["cleaned"], " ".join(main.cleanTextAndTokenize(i["comment"], toxic_keywords)))
+            
+    def test_toxicity(self):
         for i in test_cases:
             comment = i["comment"]
             expected_result = i["expected"]
