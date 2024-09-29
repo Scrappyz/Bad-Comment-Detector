@@ -24,15 +24,30 @@ def readTextFromFile(file_path: str) -> str:
 def readJsonFromFile(file_path: str):
     with open(file_path, "r") as f:
         return json.load(f)
-    
-def fuzzyReplace(words, keywords, threshold=75):
+
+# replaces words with bad words
+def fuzzyReplace(words, keywords, threshold=65):
     for i in range(len(words)):
         for word in keywords:
-            if fuzz.ratio(words[i], word) >= threshold:
+            if fuzz.ratio(words[i], word) >= threshold and words[i].find('*') > -1:
+                # print(words[i] + ", " + word)
                 words[i] = word
                 break
 
-def cleanTextAndTokenize(text, keywords: set, threshold=75) -> list:
+def replaceNonAlphabetWithWildcard(words):
+    str = ""
+    for i in range(len(words)):
+        str = ""
+        for j in range(len(words[i])):
+            if ord(words[i][j]) >= ord('a') and ord(words[i][j]) <= ord('z'):
+                str += words[i][j]
+            else:
+                str += '*'
+        words[i] = str
+    return words
+
+# returns bad words
+def cleanTextAndTokenize(text, keywords: set, threshold=65) -> list:
     # Expand contractions
     expanded_text = contractions.fix(text.lower())
     
@@ -42,11 +57,18 @@ def cleanTextAndTokenize(text, keywords: set, threshold=75) -> list:
     
     # Remove punctuation tokens
     for token in tokens:
+        # print("Token: ", token)
         # Check if the token is alphanumeric (contains letters or digits)
-        if not re.fullmatch(r'^[\W_]+$', token.text):  # Matches tokens with only special characters
-            words.append(token.text)  # Append the actual text representation of the token
-    
+        # if not re.fullmatch(r'^[\W_]+$', token.text):  # Matches tokens with only special characters
+        #     words.append(token.text)  # Append the actual text representation of the token
+        words.append(token.text)
+
+    replaceNonAlphabetWithWildcard(words)
+    # for word in words:
+    #     print("Word: " + word)
     fuzzyReplace(words, keywords, threshold)
+    # for word in words:
+    #     print("Fuzzy Word: " + word)
     return words
 
 def ruleBasedDetection(tokens, keywords: set):
@@ -66,7 +88,7 @@ def aiBasedDetection(text, nlp):
     
     return False
 
-def detectToxicity(text, keywords: set, nlp, threshold=75):
+def detectToxicity(text, keywords: set, nlp, threshold=65):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
     tokens = cleanTextAndTokenize(text, keywords, threshold)
@@ -75,8 +97,9 @@ def detectToxicity(text, keywords: set, nlp, threshold=75):
     if ruleBasedDetection(tokens, keywords):
         return True  # Mark as toxic if rule-based approach detects it
     
+    return False
     # Step 3: AI-based detection
-    return aiBasedDetection(" ".join(tokens), nlp)
+    # return aiBasedDetection(" ".join(tokens), nlp)
 
 def main():
     """Main function to run toxicity detection on test cases."""
@@ -94,5 +117,31 @@ def main():
         
         print("[{0}] ({1}): {2}".format(actual_result, expected_result, comment))
 
+def main_test():
+    """Main function to run toxicity detection on test cases."""
+    source_dir = Path(__file__).parent.resolve()
+    asset_dir = source_dir.parent.joinpath("assets")
+    test_cases = list(readJsonFromFile(asset_dir.joinpath("test_cases.json")))
+    toxic_keywords = set(readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
+    # essay = readTextFromFile(source_dir.parent.joinpath("data/essay.txt").resolve())
+    score = 0
+    total = 0
+    pass_test_case = False
+    # print(fuzz.ratio("a**hole", "asshole"));
+
+    for i in test_cases:
+        total += 1
+        comment = i["comment"]
+        expected_result = i["expected"]
+        is_toxic = detectToxicity(comment, toxic_keywords, nlp)
+        actual_result = "Toxic" if is_toxic else "Non-Toxic"
+        if actual_result == expected_result:
+            pass_test_case = True
+            score += 1
+        else:
+            pass_test_case = False
+        print("Passed:{3}, Result: {0}, Expected: {1}, Comment: {2}".format(actual_result, expected_result, comment, pass_test_case))
+    
+    print("Score: " + str(score) + "/" + str(total))
 if __name__ == "__main__":
-    main()
+    main_test()

@@ -78,6 +78,35 @@
         "comment": "Th1s 1s cr@p",
         "cleaned": "this is crap",
         "expected": "Toxic"
+    },
+    {
+        "comment": "Such a foolish idiot",
+        "cleaned": "such a foolish idiot",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "f*ck you and all of you motherf*cker$",
+        "cleaned": "fuck you and all of you motherfuckers",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "Eat your shit",
+        "cleaned": "eat your shit",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "It's a fine day",
+        "cleaned": "it is a fine day",
+        "expected": "Non-Toxic"
+    },
+    {
+        "comment": "Good luck to all of you",
+        "cleaned": "good luck to all of you",
+        "expected": "Non-Toxic"
+    },
+    {
+        "comment": "Great job, this is a masterpiece",
+        "cleaned": "great job this is a masterpiece",
+        "expected": "Non-Toxic"
     }
 ]
-  
