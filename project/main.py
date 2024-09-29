@@ -28,8 +28,11 @@ def readJsonFromFile(file_path: str):
 # replaces words with bad words
 def fuzzyReplace(words, keywords, threshold=65):
     for i in range(len(words)):
+        if words[i].find('*') < 0:
+            continue
+        
         for word in keywords:
-            if fuzz.ratio(words[i], word) >= threshold and words[i].find('*') > -1:
+            if fuzz.ratio(words[i], word) >= threshold:
                 # print(words[i] + ", " + word)
                 words[i] = word
                 break
@@ -140,7 +143,7 @@ def main_test():
             score += 1
         else:
             pass_test_case = False
-        print("Passed:{3}, Result: {0}, Expected: {1}, Comment: {2}".format(actual_result, expected_result, comment, pass_test_case))
+        print("[{3}] Result: {0}, Expected: {1}, Comment: {2}".format(actual_result, expected_result, comment, pass_test_case))
     
     print("Score: " + str(score) + "/" + str(total))
 if __name__ == "__main__":
