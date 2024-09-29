@@ -67,11 +67,7 @@ def cleanTextAndTokenize(text, keywords: set, threshold=65) -> list:
         words.append(token.text)
 
     replaceNonAlphabetWithWildcard(words)
-    # for word in words:
-    #     print("Word: " + word)
     fuzzyReplace(words, keywords, threshold)
-    # for word in words:
-    #     print("Fuzzy Word: " + word)
     return words
 
 def ruleBasedDetection(tokens, keywords: set):

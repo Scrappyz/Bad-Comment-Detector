@@ -60,6 +60,11 @@
         "expected": "Toxic"
     },
     {
+        "comment": "motherf*ck*r",
+        "cleaned": "motherfucker",
+        "expected": "Toxic"
+    },
+    {
         "comment": "What a jerk!",
         "cleaned": "what a jerk",
         "expected": "Toxic"
