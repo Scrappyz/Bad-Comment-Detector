@@ -53,16 +53,49 @@ def parse_bad_word(target_word, words):
       return base
   # print("Not bad word")
   return target_word
-    
+
+def fuzzyMatchWildCard(word, base):
+  wordI = 0
+  baseI = 0
+  while wordI < len(word):
+    if word[wordI] == base[baseI]:
+      wordI += 1
+      baseI += 1
+      if baseI == len(base):
+        # print("Success")
+        return base
+    elif word[wordI] == '*':
+      wordI += 1
+      baseI += 1
+      if baseI == len(base):
+        # print("Success")
+        return base
+    else:
+      wordI += 1
+      baseI = 0
+  # print("Failed")
+  return word
+
+def fuzzyMatchWord(word, words):
+  for i in range(len(words)):
+    if fuzzyMatchWildCard(word, words[i]) == words[i]:
+      print(words[i])
+      return words[i]
+  print(word)
+  return word
+
 def main_test():
-  parse_word_fuck("fart")
-  parse_word_fuck("fuuu")
-  parse_word_fuck("fuck")
-  parse_word_fuck("fucccckkkk")
-  parse_word_fuck("fck")
-  parse_word_fuck("feature")
-  parse_bad_word("motherfuckerrr", ["motherfucker", "mthrfcker"])
-  parse_bad_word("asssssholeeeeee", ["asshole", "ashole"])
+  # parse_word_fuck("fart")
+  # parse_word_fuck("fuuu")
+  # parse_word_fuck("fuck")
+  # parse_word_fuck("fucccckkkk")
+  # parse_word_fuck("fck")
+  # parse_word_fuck("feature")
+  # parse_bad_word("motherfuckerrr", ["motherfucker", "mthrfcker"])
+  # parse_bad_word("asssssholeeeeee", ["asshole", "ashole"])
+  fuzzyMatchWildCard("bird", "bi")
+  fuzzyMatchWildCard("bi", "bird")
+  fuzzyMatchWord("bigb*rd", ["bird"])
 
 if __name__ == "__main__":
   main_test()
