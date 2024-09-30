@@ -7,6 +7,8 @@ import contractions
 from thefuzz import fuzz
 from pathlib import Path
 
+import parser
+
 # Load spaCy model
 nlp = spacy.load("en_core_web_md")
 
@@ -73,14 +75,17 @@ def cleanTextAndTokenize(text, keywords: set, threshold=65) -> list:
     fuzzyReplace(words, keywords, threshold)
     for word in words:
         print("Fuzzy: " + word)
+
+    for i in range(len(words)):
+        words[i] = parser.parse_bad_word(words[i], list(keywords))
     
     # for i in range(len(words)):
     #     for badword in keywords:
     #         if words[i].find(badword) > -1:
     #             words[i] = badword
 
-    # for word in words:
-    #     print("Regex: " + word)
+    for word in words:
+        print("Regex: " + word)
     
     return words
 
