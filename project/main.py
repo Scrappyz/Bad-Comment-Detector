@@ -27,6 +27,21 @@ def readJsonFromFile(file_path: str):
     with open(file_path, "r") as f:
         return json.load(f)
 
+# Turns non-alphabets into any one character regex pattern
+def toRegex(text: str) -> str:
+    s = ""
+    for i in text.lower():
+        if ord(i) >= ord('a') and ord(i) <= ord('z') or i == ' ':
+            s += i
+            continue
+        
+        if i == '.':
+            s += '\\'
+        
+        s += '.'
+        
+    return s
+
 # replaces words with bad words
 def fuzzyReplace(words, keywords, threshold=65):
     for i in range(len(words)):
