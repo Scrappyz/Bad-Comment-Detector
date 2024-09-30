@@ -7,6 +7,8 @@ import contractions
 from thefuzz import fuzz
 from pathlib import Path
 
+import parser
+
 # Load spaCy model
 nlp = spacy.load("en_core_web_md")
 
@@ -49,6 +51,19 @@ def replaceNonAlphabetWithWildcard(words):
         words[i] = str
     return words
 
+def getOriginalComment(text, keywords: set, threshold=65):
+    # Expand contractions
+    expanded_text = contractions.fix(text.lower())
+    
+    # Tokenize the text
+    tokens = nlp(expanded_text, disable=["parser", "tagger", "ner", "lemmatizer", "textcats"])
+    words = []
+
+    for token in tokens:
+        words.append(token.text)
+
+    return words
+
 # returns bad words
 def cleanTextAndTokenize(text, keywords: set, threshold=65) -> list:
     # Expand contractions
@@ -67,7 +82,32 @@ def cleanTextAndTokenize(text, keywords: set, threshold=65) -> list:
         words.append(token.text)
 
     replaceNonAlphabetWithWildcard(words)
-    fuzzyReplace(words, keywords, threshold)
+    for word in words:
+        print("Current: " + word)
+    
+    # fuzzyReplace(words, keywords, threshold)
+
+    badWordsList = list(keywords)
+
+    for i in range(len(words)):
+        # if words[i].find('*') < 0:
+        #     continue
+        words[i] = parser.fuzzyMatchWord(words[i], badWordsList)
+
+    for word in words:
+        print("Fuzzy: " + word)
+
+    for i in range(len(words)):
+        words[i] = parser.parse_bad_word(words[i], badWordsList)
+    
+    # for i in range(len(words)):
+    #     for badword in keywords:
+    #         if words[i].find(badword) > -1:
+    #             words[i] = badword
+
+    for word in words:
+        print("Regex: " + word)
+    
     return words
 
 def ruleBasedDetection(tokens, keywords: set):
@@ -91,6 +131,7 @@ def detectToxicity(text, keywords: set, nlp, threshold=65):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
     tokens = cleanTextAndTokenize(text, keywords, threshold)
+    originalTokens = getOriginalComment(text, keywords, threshold)
     
     # Step 2: Rule-based detection
     if ruleBasedDetection(tokens, keywords):
