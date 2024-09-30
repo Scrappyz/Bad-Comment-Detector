@@ -82,14 +82,16 @@ def cleanTextAndTokenize(text, keywords: set, threshold=65) -> list:
         words.append(token.text)
 
     replaceNonAlphabetWithWildcard(words)
-    # for word in words:
-    #     print("Current: " + word)
+    for word in words:
+        print("Current: " + word)
     
     # fuzzyReplace(words, keywords, threshold)
 
     badWordsList = list(keywords)
 
     for i in range(len(words)):
+        # if words[i].find('*') < 0:
+        #     continue
         words[i] = parser.fuzzyMatchWord(words[i], badWordsList)
 
     for word in words:

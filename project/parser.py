@@ -79,9 +79,9 @@ def fuzzyMatchWildCard(word, base):
 def fuzzyMatchWord(word, words):
   for i in range(len(words)):
     if fuzzyMatchWildCard(word, words[i]) == words[i]:
-      print(words[i])
+      # print(words[i])
       return words[i]
-  print(word)
+  # print(word)
   return word
 
 def main_test():

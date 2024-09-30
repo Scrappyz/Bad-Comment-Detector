@@ -113,5 +113,15 @@
         "comment": "Great job, this is a masterpiece",
         "cleaned": "great job this is a masterpiece",
         "expected": "Non-Toxic"
+    },
+    {
+        "comment": "fck",
+        "cleaned": "fuck",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "mtherfcker",
+        "cleaned": "motherfucker",
+        "expected": "Toxic"
     }
 ]
