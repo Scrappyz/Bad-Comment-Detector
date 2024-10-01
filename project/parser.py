@@ -15,26 +15,26 @@ def checkDict(d):
       return False
   return True
 
-def parse_word_fuck(target_word):
-  print("---------------")
-  print(target_word)
-  words = ["fucking","fuck", "fck", "fuc", "fuk"]
-  for i in range(len(words)):
-    ci = 0
-    cj = 0
-    base = words[i]
-    d = createDict(base)
-    while ci < len(base) and cj < len(target_word):
-      if base[ci] == target_word[cj]:
-        cj += 1
-        d[base[ci]]["current"] += 1
-      else:
-        ci += 1
-    if checkDict(d):
-      print(base)
-      return True
-  print("Not fuck")
-  return False
+# def parse_word_fuck(target_word):
+#   print("---------------")
+#   print(target_word)
+#   words = ["fucking","fuck", "fck", "fuc", "fuk"]
+#   for i in range(len(words)):
+#     ci = 0
+#     cj = 0
+#     base = words[i]
+#     d = createDict(base)
+#     while ci < len(base) and cj < len(target_word):
+#       if base[ci] == target_word[cj]:
+#         cj += 1
+#         d[base[ci]]["current"] += 1
+#       else:
+#         ci += 1
+#     if checkDict(d):
+#       print(base)
+#       return True
+#   print("Not fuck")
+#   return False
 
 def parseBadWord(target_word, words):
   # print("---------------")
@@ -70,23 +70,23 @@ def parseBadWord(target_word, words):
   print("Not bad word")
   return target_word
 
-def parseBadWordWithAhoCorasick(targetWord, words):
-  automaton = ahocorasick.Automaton(ahocorasick.STORE_INTS)
-  for word in words:
-    automaton.add_word(word)
-  new_word = ""
-  current_letter = ''
-  for i in range(len(targetWord)):
-    if current_letter != targetWord[i]:
-      current_letter = targetWord[i]
-      new_word += current_letter
-  # print(new_word)
-  listOfWords = list(automaton.keys(new_word, '*', ahocorasick.MATCH_AT_LEAST_PREFIX))
-  if len(listOfWords) > 0:
-    print(listOfWords)
-    return listOfWords[0]
-  print(targetWord)
-  return targetWord
+# def parseBadWordWithAhoCorasick(targetWord, words):
+#   automaton = ahocorasick.Automaton(ahocorasick.STORE_INTS)
+#   for word in words:
+#     automaton.add_word(word)
+#   new_word = ""
+#   current_letter = ''
+#   for i in range(len(targetWord)):
+#     if current_letter != targetWord[i]:
+#       current_letter = targetWord[i]
+#       new_word += current_letter
+#   # print(new_word)
+#   listOfWords = list(automaton.keys(new_word, '*', ahocorasick.MATCH_AT_LEAST_PREFIX))
+#   if len(listOfWords) > 0:
+#     print(listOfWords)
+#     return listOfWords[0]
+#   print(targetWord)
+#   return targetWord
 
 def fuzzyMatchWildCard(word, base):
   wordI = 0
@@ -120,6 +120,23 @@ def fuzzyMatchWord(word, words):
       return words[i]
   print(word)
   return word
+
+def findMatchingSubstrings(s, l, wildcard: str):
+  # substrings = set()
+  for word in l:
+    i = 0
+    j = 0
+    while i < len(s) and j < len(word):
+      if s[i] == word[j] or s[i] == wildcard:
+        i += 1
+        j += 1
+      else:
+        i = i - j + 1
+        j = 0
+    if j == len(word):
+      return word
+      # substrings.add(word)
+  return s
 
 def main_test():
   # parse_word_fuck("fart")

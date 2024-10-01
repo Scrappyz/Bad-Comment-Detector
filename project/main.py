@@ -125,7 +125,8 @@ def cleanTextAndTokenize(text, keywords: set, threshold=65) -> list:
     for i in range(len(words)):
         # if words[i].find('*') < 0:
         #     continue
-        words[i] = parser.fuzzyMatchWord(words[i], badWordsList)
+        words[i] = parser.findMatchingSubstrings(words[i], badWordsList, '*')
+        # words[i] = parser.fuzzyMatchWord(words[i], badWordsList)
 
     for word in words:
         print("Fuzzy: " + word)
