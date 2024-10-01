@@ -131,7 +131,7 @@ def cleanTextAndTokenize(text, keywords: set, threshold=65) -> list:
         print("Fuzzy: " + word)
 
     for i in range(len(words)):
-        words[i] = parser.parse_bad_word(words[i], badWordsList)
+        words[i] = parser.parseBadWord(words[i], badWordsList)
     
     # for i in range(len(words)):
     #     for badword in keywords:

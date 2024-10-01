@@ -123,5 +123,15 @@
         "comment": "mtherfcker",
         "cleaned": "motherfucker",
         "expected": "Toxic"
+    },
+    {
+        "comment": "fffffffuuuuuuuuuuuucccccccckkkkkkkkkkkkkkk",
+        "cleaned": "fuck",
+        "expected": "Toxic"
+    },
+    {
+        "comment": "fffffff*cccccccckkkkkkkkkkkkkkk",
+        "cleaned": "fuck",
+        "expected": "Toxic"
     }
 ]
