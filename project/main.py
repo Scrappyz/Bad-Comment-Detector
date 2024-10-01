@@ -54,23 +54,64 @@ def fuzzyReplace(words, keywords, threshold=65):
                 words[i] = word
                 break
             
-def findMatchingSubstrings(s, l, wildcard: str) -> set:
-    substrings = set()
+def replaceNonAlphabets(text: str, replace_with: str) -> str:
+    s = ""
+    for i in text.lower():
+        if ord(i) >= ord('a') and ord(i) <= ord('z') or i == ' ':
+            s += i
+            continue
+        
+        s += replace_with
+        
+    return s
 
-    for word in l:
+def findMatchingSubstrings(text, word_list, wildcards: str) -> dict:
+    substrings = {}
+    wildcards_set = set()
+    
+    # Add wildcards to set to be able to compare multiple wildcards
+    for i in wildcards:
+        wildcards_set.add(i)
+
+    # Loop through the word list
+    for word in word_list:
         i = 0
         j = 0
-        while i < len(s) and j < len(word):
-            if s[i] == word[j] or s[i] == wildcard:
+        substr = "" # Temporary variable to store the found substring
+        
+        # Loop until whole text is traversed
+        while i < len(text):
+            
+            # If both `i` and `j` point to the same character, it means a possible substring is found.
+            # Increment both `i` and `j` so they will traverse with each other.
+            if text[i] == word[j] or text[i] in wildcards_set:
+                substr += text[i]
                 i += 1
                 j += 1
-            else:
+            else: # Otherwise, reset `j` and `substr`
                 i = i - j + 1
                 j = 0
-        if j == len(word):
-            substrings.add(word)
+                substr = ""
+                
+            # If `j` reaches the end of `word`, it means a substring was found.
+            if j == len(word):
+                substrings[substr] = word
+                substr = ""
+                i += 1
+                j = 0
 
     return substrings
+
+def revertWildcards(text: str, original_text: str) -> str:
+    new_str = ""
+    for i in range(len(text)):
+        if text[i] == '*':
+            new_str += original_text[i]
+            continue
+        
+        new_str += text[i]
+        
+    return new_str
 
 def replaceNonAlphabetWithWildcard(words):
     str = ""
