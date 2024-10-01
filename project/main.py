@@ -53,6 +53,24 @@ def fuzzyReplace(words, keywords, threshold=65):
                 # print(words[i] + ", " + word)
                 words[i] = word
                 break
+            
+def findMatchingSubstrings(s, l, wildcard: str) -> set:
+    substrings = set()
+
+    for word in l:
+        i = 0
+        j = 0
+        while i < len(s) and j < len(word):
+            if s[i] == word[j] or s[i] == wildcard:
+                i += 1
+                j += 1
+            else:
+                i = i - j + 1
+                j = 0
+        if j == len(word):
+            substrings.add(word)
+
+    return substrings
 
 def replaceNonAlphabetWithWildcard(words):
     str = ""
