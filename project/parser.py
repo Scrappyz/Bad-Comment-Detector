@@ -15,27 +15,6 @@ def checkDict(d):
       return False
   return True
 
-# def parse_word_fuck(target_word):
-#   print("---------------")
-#   print(target_word)
-#   words = ["fucking","fuck", "fck", "fuc", "fuk"]
-#   for i in range(len(words)):
-#     ci = 0
-#     cj = 0
-#     base = words[i]
-#     d = createDict(base)
-#     while ci < len(base) and cj < len(target_word):
-#       if base[ci] == target_word[cj]:
-#         cj += 1
-#         d[base[ci]]["current"] += 1
-#       else:
-#         ci += 1
-#     if checkDict(d):
-#       print(base)
-#       return True
-#   print("Not fuck")
-#   return False
-
 def parseBadWord(target_word, words):
   # print("---------------")
   # print(target_word)
@@ -91,10 +70,12 @@ def parseBadWord(target_word, words):
 def fuzzyMatchWildCard(word, base):
   wordI = 0
   baseI = 0
+  last = 0
   while wordI < len(word):
     if word[wordI] == base[baseI]:
       wordI += 1
       baseI += 1
+      last += 1
       if baseI == len(base):
         # print("Success")
         # return base
@@ -102,13 +83,16 @@ def fuzzyMatchWildCard(word, base):
     elif word[wordI] == '*':
       wordI += 1
       baseI += 1
+      last += 1
       if baseI == len(base):
         # print("Success")
         # return base
         return True
     else:
       wordI += 1
+      wordI -= last
       baseI = 0
+      last = 0
   # print("Failed")
   # return word
   return False
@@ -120,23 +104,6 @@ def fuzzyMatchWord(word, words):
       return words[i]
   print(word)
   return word
-
-def findMatchingSubstrings(s, l, wildcard: str):
-  # substrings = set()
-  for word in l:
-    i = 0
-    j = 0
-    while i < len(s) and j < len(word):
-      if s[i] == word[j] or s[i] == wildcard:
-        i += 1
-        j += 1
-      else:
-        i = i - j + 1
-        j = 0
-    if j == len(word):
-      return word
-      # substrings.add(word)
-  return s
 
 def main_test():
   # parse_word_fuck("fart")
@@ -156,7 +123,8 @@ def main_test():
   # fuzzyMatchWildCard("bird", "bi")
   # fuzzyMatchWildCard("bi", "bird")
   # fuzzyMatchWord("bigb*rd", ["bird"])
-  fuzzyMatchWord("a**", ["ass"])
+  fuzzyMatchWord("aass", ["ass"])
+  fuzzyMatchWord("aabaabaabaabaabaabaab", ["aaab"])
 
 if __name__ == "__main__":
   main_test()
