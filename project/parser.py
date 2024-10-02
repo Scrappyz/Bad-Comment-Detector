@@ -105,18 +105,27 @@ def fuzzyMatchWord(word, words):
   print(word)
   return word
 
-def findAllSubstrings(s, word_list, wildcard='*'):
-  automaton = ahocorasick.Automaton(ahocorasick.STORE_INTS)
-  for word in word_list:
-    automaton.add_word(word)
+def findAllSubstrings(s, word_list, counter=1):
+  automaton = ahocorasick.Automaton()
+  # print("Base: " + s)
+  for i in range(len(word_list)):
+    automaton.add_word(word_list[i], i)
   automaton.make_automaton()
-  return set(automaton.keys(s, wildcard))
+  found_words = set()
+  count = 0
+  for _, idx in automaton.iter(s):
+    found_words.add(word_list[idx])
+    count += 1
+    if count == counter:
+      break
+  return found_words
 
-def isSubstring(s, word_list, wildcard='*'):
-  listOfWords = findAllSubstrings(s, word_list, wildcard)
-  if len(listOfWords) > 0:
-    return True
-  return False
+def isSubstring(s, word_list, counter=None):
+  if counter == None:
+    counter = len(word_list)
+  words = findAllSubstrings(s, word_list, counter)
+  # print(words)
+  return len(words) > 0
 
 def main_test():
   # parse_word_fuck("fart")
@@ -139,7 +148,8 @@ def main_test():
   # fuzzyMatchWord("aass", ["ass"])
   # fuzzyMatchWord("aabaabaabaabaabaabaab", ["aaab"])
   print(isSubstring("bigbird", ["bird", "big"]))
-  fuzzyMatchWord("bigbird", ["bird", "big"])
+  # parseBadWordWithAhoCorasick("bigbird", ["bird", "big"])
+  # fuzzyMatchWord("bigbird", ["bird", "big"])
 
 if __name__ == "__main__":
   main_test()
