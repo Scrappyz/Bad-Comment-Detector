@@ -105,6 +105,19 @@ def fuzzyMatchWord(word, words):
   print(word)
   return word
 
+def findAllSubstrings(s, word_list, wildcard='*'):
+  automaton = ahocorasick.Automaton(ahocorasick.STORE_INTS)
+  for word in word_list:
+    automaton.add_word(word)
+  automaton.make_automaton()
+  return set(automaton.keys(s, wildcard))
+
+def isSubstring(s, word_list, wildcard='*'):
+  listOfWords = findAllSubstrings(s, word_list, wildcard)
+  if len(listOfWords) > 0:
+    return True
+  return False
+
 def main_test():
   # parse_word_fuck("fart")
   # parse_word_fuck("fuuu")
@@ -123,8 +136,10 @@ def main_test():
   # fuzzyMatchWildCard("bird", "bi")
   # fuzzyMatchWildCard("bi", "bird")
   # fuzzyMatchWord("bigb*rd", ["bird"])
-  fuzzyMatchWord("aass", ["ass"])
-  fuzzyMatchWord("aabaabaabaabaabaabaab", ["aaab"])
+  # fuzzyMatchWord("aass", ["ass"])
+  # fuzzyMatchWord("aabaabaabaabaabaabaab", ["aaab"])
+  print(isSubstring("bigbird", ["bird", "big"]))
+  fuzzyMatchWord("bigbird", ["bird", "big"])
 
 if __name__ == "__main__":
   main_test()
