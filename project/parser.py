@@ -105,7 +105,7 @@ def fuzzyMatchWord(word, words):
   print(word)
   return word
 
-def findAllSubstrings(s, word_list, counter=1):
+def findAllSubstrings(s, word_list, max=-1):
   automaton = ahocorasick.Automaton()
   # print("Base: " + s)
   for i in range(len(word_list)):
@@ -113,19 +113,23 @@ def findAllSubstrings(s, word_list, counter=1):
   automaton.make_automaton()
   found_words = set()
   count = 0
+  
   for _, idx in automaton.iter(s):
     found_words.add(word_list[idx])
     count += 1
-    if count == counter:
+    if max >= 0 and count == max:
       break
+    
   return found_words
 
-def isSubstring(s, word_list, counter=None):
-  if counter == None:
-    counter = len(word_list)
-  words = findAllSubstrings(s, word_list, counter)
+def isSubstring(s, word_list, min=1):
+  if min < 1:
+    min = len(word_list)
+    
+  words = findAllSubstrings(s, word_list, min)
+  
   # print(words)
-  return len(words) > 0
+  return len(words) >= min
 
 def main_test():
   # parse_word_fuck("fart")
