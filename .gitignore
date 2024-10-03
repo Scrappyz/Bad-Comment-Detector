@@ -8,3 +8,7 @@ project/__pycache__
 !test/**
 !assets/
 !assets/**
+!config
+!config/**
+!scripts
+!scripts/**
