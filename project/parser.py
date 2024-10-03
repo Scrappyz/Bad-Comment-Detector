@@ -106,10 +106,14 @@ def fuzzyMatchWord(word, words):
   return word
 
 def findAllSubstrings(s, word_list, max=-1):
+  if type(word_list) == set:
+    word_list = list(word_list)
+    
   automaton = ahocorasick.Automaton()
   # print("Base: " + s)
   for i in range(len(word_list)):
     automaton.add_word(word_list[i], i)
+    
   automaton.make_automaton()
   found_words = set()
   count = 0
@@ -117,7 +121,7 @@ def findAllSubstrings(s, word_list, max=-1):
   for _, idx in automaton.iter(s):
     found_words.add(word_list[idx])
     count += 1
-    if max >= 0 and count == max:
+    if max >= 0 and count >= max:
       break
     
   return found_words

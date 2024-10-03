@@ -107,14 +107,9 @@ def cleanText(text: str, word_set) -> str:
 
 def ruleBasedDetection(tokens, keywords: set):
     # Detect toxicity using rule-based regex patterns.
-    # automaton = ahocorasick.Automaton(ahocorasick.STORE_INTS)
-    # for i in keywords:
-    #     automaton.add_word(i)
-        
-    # automaton.make_automaton()
     
     for i in tokens:
-        if str(i) in keywords:
+        if parser.isSubstring(str(i), keywords):
             return True
     return False
 
