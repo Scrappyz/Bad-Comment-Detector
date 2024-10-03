@@ -3,26 +3,22 @@ import spacy
 import os
 import re
 import contractions
-from thefuzz import fuzz
 from pathlib import Path
 
 import parser
 import helper
 
-# Load spaCy model
-nlp = spacy.load("en_core_web_md")
-
-# Mapping for leetspeak to regular characters
-leet_map = {
-    '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't',
-    '@': 'a', '$': 's', '(': 'c'
-}
-
-wildcards = {
-    '*', '#'
-}
-
 def cleanText(text: str, word_set) -> str:
+    # Mapping for leetspeak to regular characters
+    leet_map = {
+        '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't',
+        '@': 'a', '$': 's', '(': 'c'
+    }
+
+    wildcards = {
+        '*', '#'
+    }
+
     text = contractions.fix(text)
     
     print("1.) ", text)
@@ -49,7 +45,6 @@ def cleanText(text: str, word_set) -> str:
 
 def ruleBasedDetection(tokens, keywords: set):
     # Detect toxicity using rule-based regex patterns.
-    
     for i in tokens:
         if parser.isSubstring(str(i), keywords):
             return True
@@ -65,7 +60,7 @@ def aiBasedDetection(text, nlp):
     
     return False
 
-def detectToxicity(text, keywords: set, nlp, threshold=65):
+def detectToxicity(text, keywords: set, nlp, ai=True, threshold=65):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
     tokens = nlp(cleanText(text, keywords))
@@ -85,18 +80,24 @@ def main():
     toxic_keywords = set(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
     
     parser = argparse.ArgumentParser("Bad Comment Detector")
-    parser.add_argument("-t", dest="text", metavar="Text", type=str, nargs=1, help="Comment to detect", required=False)
+    parser.add_argument("-t", dest="text", metavar="Text", nargs='+', type=str, help="Comment to detect", required=False)
+    parser.add_argument("--no-ai", dest="ai", action="store_false", required=False, help="Enable AI filter")
     
     args = parser.parse_args()
     
-    if args.text:
-        is_toxic = detectToxicity(args.text[0], toxic_keywords, nlp)
-        print("Toxic" if is_toxic else "Non-Toxic")
+    if args.ai:
+        nlp = spacy.load("en_core_web_md")
     else:
-        main_test(test_cases, toxic_keywords)
+        nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
+    
+    if args.text:
+        for i in args.text:
+            print("[Toxic]: " + i if detectToxicity(i, toxic_keywords, nlp, args.ai) else "[Non-toxic]: " + i)
+    else:
+        main_test(test_cases, toxic_keywords, nlp)
     
 
-def main_test(test_cases, toxic_keywords):
+def main_test(test_cases, toxic_keywords, nlp):
     """Main function to run toxicity detection on test cases."""
     source_dir = Path(__file__).parent.resolve()
     
