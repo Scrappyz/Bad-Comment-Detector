@@ -79,23 +79,26 @@ def detectToxicity(text, keywords: set, nlp, threshold=65):
     # return aiBasedDetection(" ".join(tokens), nlp)
 
 def main():
-    """Main function to run toxicity detection on test cases."""
     source_dir = Path(__file__).parent.resolve()
     asset_dir = source_dir.parent.joinpath("assets")
     test_cases = list(helper.readJsonFromFile(asset_dir.joinpath("test_cases.json")))
     toxic_keywords = set(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
-    essay = helper.readTextFromFile(source_dir.parent.joinpath("data/essay.txt").resolve())
     
-    text = "You f#ck1ng fuc a$$h0l5"
-    cleaned = cleanText(text, toxic_keywords)
-    print(cleaned)
+    parser = argparse.ArgumentParser("Bad Comment Detector")
+    parser.add_argument("-t", dest="text", metavar="Text", type=str, nargs=1, help="Comment to detect", required=False)
+    
+    args = parser.parse_args()
+    
+    if args.text:
+        is_toxic = detectToxicity(args.text[0], toxic_keywords, nlp)
+        print("Toxic" if is_toxic else "Non-Toxic")
+    else:
+        main_test(test_cases, toxic_keywords)
+    
 
-def main_test():
+def main_test(test_cases, toxic_keywords):
     """Main function to run toxicity detection on test cases."""
     source_dir = Path(__file__).parent.resolve()
-    asset_dir = source_dir.parent.joinpath("assets")
-    test_cases = list(helper.readJsonFromFile(asset_dir.joinpath("test_cases.json")))
-    toxic_keywords = set(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
     
     score = 0
     total = 0
@@ -117,4 +120,5 @@ def main_test():
     
     print("Score: " + str(score) + "/" + str(total))
 if __name__ == "__main__":
-    main_test()
+    main()
+    # main_test()

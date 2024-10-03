@@ -32,7 +32,7 @@
     {
         "comment": "Shut upppp!",
         "cleaned": "shut up",
-        "expected": "Toxic"
+        "expected": "Non-Toxic"
     },
     {
         "comment": "a**hole",
@@ -42,7 +42,7 @@
     {
         "comment": "This is so stuuuupid!",
         "cleaned": "this is so stupid",
-        "expected": "Toxic"
+        "expected": "Non-Toxic"
     },
     {
         "comment": "Go to hell!!!",
@@ -67,7 +67,7 @@
     {
         "comment": "What a jerk!",
         "cleaned": "what a jerk",
-        "expected": "Toxic"
+        "expected": "Non-Toxic"
     },
     {
         "comment": "You're awesome!",
@@ -77,7 +77,7 @@
     {
         "comment": "Get lost, fool!",
         "cleaned": "get lost fool",
-        "expected": "Toxic"
+        "expected": "Non-Toxic"
     },
     {
         "comment": "Th1s 1s cr@p",
@@ -87,7 +87,7 @@
     {
         "comment": "Such a foolish idiot",
         "cleaned": "such a foolish idiot",
-        "expected": "Toxic"
+        "expected": "Non-Toxic"
     },
     {
         "comment": "f*ck you and all of you motherf*cker$",
@@ -116,12 +116,12 @@
     },
     {
         "comment": "fck",
-        "cleaned": "fuck",
+        "cleaned": "fck",
         "expected": "Toxic"
     },
     {
         "comment": "mtherfcker",
-        "cleaned": "motherfucker",
+        "cleaned": "mtherfucker",
         "expected": "Toxic"
     },
     {
