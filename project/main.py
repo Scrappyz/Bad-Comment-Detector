@@ -74,6 +74,7 @@ def detectToxicity(text, keywords: set, nlp, localNLP, ai=True, threshold=65):
     if ai:
         return aiBasedDetection(cleanedText, localNLP)
     # return aiBasedDetection(" ".join(tokens), nlp)
+    return False
 
 def main():
     source_dir = Path(__file__).parent.resolve()
