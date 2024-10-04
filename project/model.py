@@ -38,7 +38,7 @@ def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
       doc1.cats["toxic"] = 1
       doc1.cats["non-toxic"] = 0
     else:
-      print("Not")
+      # print("Not")
       doc1.cats["toxic"] = 0
       doc1.cats["non-toxic"] = 1
     l.append(doc1)
@@ -71,12 +71,22 @@ def loadYoutubeComments(nlp, startRange, endRange):
     l.append(doc1)
   return l
 
+def loadAllDPossibleTrainDataSets(nlp):
+  l = []
+  # l += loadAndPrepareDataSetFromCSV(nlp, 1, 13477)
+  l += loadYoutubeComments(nlp, 1, 500)
+  return l
+
+def loadAllPossibleValidationDataSets(nlp):
+  l = []
+  # l += loadAndPrepareDataSetFromCSV(nlp, 13477, None)
+  l += loadYoutubeComments(nlp, 500, None)
+  return l
+
 if __name__ == "__main__":
   nlp = spacy.load("en_core_web_md")
-  # trainData = loadAndPrepareDataSetFromCSV(nlp, 1, 13477)
-  trainData = loadYoutubeComments(nlp, 1, 500)
-  # validationData = loadAndPrepareDataSetFromCSV(nlp, 13477, None)
-  validationData = loadYoutubeComments(nlp, 500, None)
+  trainData = loadAllDPossibleTrainDataSets(nlp)
+  validationData = loadAllPossibleValidationDataSets(nlp)
   print(len(trainData))
   print(len(validationData))
   binaryTrainData = DocBin(docs=trainData)

@@ -55,22 +55,24 @@ def aiBasedDetection(text, nlp):
     doc = nlp(text)
 
     # Assuming the model's 'cats' attribute gives the category probabilities
-    if 'toxic' in doc.cats and doc.cats['toxic'] > 0.5:
+    if 'toxic' in doc.cats and doc.cats['toxic'] > 0.75:
         return True  # Toxic based on AI model
     
     return False
 
-def detectToxicity(text, keywords: set, nlp, ai=True, threshold=65):
+def detectToxicity(text, keywords: set, nlp, localNLP, ai=True, threshold=65):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
-    tokens = nlp(cleanText(text, keywords))
+    cleanedText = cleanText(text, keywords)
+    tokens = nlp(cleanedText)
     
     # Step 2: Rule-based detection
     if ruleBasedDetection(tokens, keywords):
         return True  # Mark as toxic if rule-based approach detects it
     
-    return False
     # Step 3: AI-based detection
+    if ai:
+        return aiBasedDetection(cleanedText, localNLP)
     # return aiBasedDetection(" ".join(tokens), nlp)
 
 def main():
@@ -87,12 +89,14 @@ def main():
     
     if args.ai:
         nlp = spacy.load("en_core_web_md")
+        localNLP = spacy.load("../output/model-last")
+        # print("With AI")
     else:
         nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
     
     if args.text:
         for i in args.text:
-            print("[Toxic]: " + i if detectToxicity(i, toxic_keywords, nlp, args.ai) else "[Non-toxic]: " + i)
+            print("[Toxic]: " + i if detectToxicity(i, toxic_keywords, nlp, localNLP, args.ai) else "[Non-toxic]: " + i)
     else:
         main_test(test_cases, toxic_keywords, nlp)
     
