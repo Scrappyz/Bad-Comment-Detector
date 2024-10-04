@@ -11,7 +11,7 @@ def readJsonFromFile(file_path: str):
         return json.load(f)
 
 def readCSVFromFile(file_path):
-    with open(file_path, mode='r') as f:
+    with open(file_path, mode='r', encoding="utf8") as f:
         lines = []
         csvFile = csv.reader(f)
         for line in csvFile:
