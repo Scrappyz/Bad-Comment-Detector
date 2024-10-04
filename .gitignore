@@ -12,3 +12,5 @@ project/__pycache__
 !config/**
 !scripts
 !scripts/**
+!input
+!input/**
