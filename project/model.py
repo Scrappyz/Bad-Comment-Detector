@@ -28,13 +28,17 @@ def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
   if endRange == None:
     endRange = len(t)
   print(endRange)
+  # print(t[1][5])
+  # print(t[1][6])
   for i in range(startRange, endRange):
     # print(t[6])
     doc1 = nlp(t[i][6])
     if t[i][5] == "0" or t[i][5] == "1":
+      # print("Hello")
       doc1.cats["toxic"] = 1
       doc1.cats["non-toxic"] = 0
     else:
+      print("Not")
       doc1.cats["toxic"] = 0
       doc1.cats["non-toxic"] = 1
     l.append(doc1)
