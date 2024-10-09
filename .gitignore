@@ -14,3 +14,5 @@ project/__pycache__
 !scripts/**
 !input
 !input/**
+!README.md
+!setup.py
