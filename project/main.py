@@ -1,7 +1,5 @@
 import argparse
 import spacy
-import os
-import re
 import contractions
 from pathlib import Path
 
@@ -99,10 +97,10 @@ def main():
         for i in args.text:
             print("[Toxic]: " + i if detectToxicity(i, toxic_keywords, nlp, localNLP, args.ai) else "[Non-toxic]: " + i)
     else:
-        main_test(test_cases, toxic_keywords, nlp)
+        main_test(test_cases, toxic_keywords, nlp, localNLP)
     
 
-def main_test(test_cases, toxic_keywords, nlp):
+def main_test(test_cases, toxic_keywords, nlp, localNLP):
     """Main function to run toxicity detection on test cases."""
     source_dir = Path(__file__).parent.resolve()
     
@@ -115,7 +113,7 @@ def main_test(test_cases, toxic_keywords, nlp):
         total += 1
         comment = i["comment"]
         expected_result = i["expected"]
-        is_toxic = detectToxicity(comment, toxic_keywords, nlp)
+        is_toxic = detectToxicity(comment, toxic_keywords, nlp, localNLP)
         actual_result = "Toxic" if is_toxic else "Non-Toxic"
         if actual_result == expected_result:
             pass_test_case = True
@@ -125,6 +123,6 @@ def main_test(test_cases, toxic_keywords, nlp):
         print("[{3}] Result: {0}, Expected: {1}, Comment: {2}".format(actual_result, expected_result, comment, pass_test_case))
     
     print("Score: " + str(score) + "/" + str(total))
+    
 if __name__ == "__main__":
     main()
-    # main_test()
