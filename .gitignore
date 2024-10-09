@@ -1,8 +1,8 @@
 *
-!project/
-!project/**
-project/test.py
-project/__pycache__
+!detector/
+!detector/**
+detector/test.py
+detector/__pycache__
 !.gitignore
 !test/
 !test/**
