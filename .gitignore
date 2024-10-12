@@ -16,3 +16,6 @@ detector/__pycache__
 !input/**
 !README.md
 !setup.py
+!output/
+!output/** 
+!.gitattributes
