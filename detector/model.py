@@ -106,14 +106,14 @@ def loadAllDPossibleTrainDataSets(nlp):
   l = []
   l += loadAndPrepareDataSetFromCSV(nlp, 1, 18588)
   l += loadYoutubeComments(nlp, 1, 750)
-  # l += loadTCCC(nlp, 1, 119679)
+  l += loadTCCC(nlp, 1, 119679)
   return l
 
 def loadAllPossibleValidationDataSets(nlp):
   l = []
   l += loadAndPrepareDataSetFromCSV(nlp, 18588, None)
   l += loadYoutubeComments(nlp, 750, None)
-  # l += loadTCCC(nlp, 119679, None)
+  l += loadTCCC(nlp, 119679, None)
   return l
 
 if __name__ == "__main__":
