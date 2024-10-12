@@ -52,12 +52,13 @@ def aiBasedDetection(tokens, nlp):
     # Detect toxicity using spaCy's AI-based model.
 
     # Assuming the model's 'cats' attribute gives the category probabilities
+    print(tokens.cats)
     if 'toxic' in tokens.cats and tokens.cats['toxic'] > 0.7:
         return True  # Toxic based on AI model
     
     return False
 
-def detectToxicity(text, keywords: set, nlp, localNLP, ai=True, threshold=65):
+def detectToxicity(text, keywords: set, nlp, custom_nlp, ai=True, threshold=65):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
     cleaned_text = cleanText(text, keywords)
@@ -69,7 +70,8 @@ def detectToxicity(text, keywords: set, nlp, localNLP, ai=True, threshold=65):
     
     # Step 3: AI-based detection
     if ai:
-        return aiBasedDetection(tokens, localNLP)
+        tokens = custom_nlp(cleaned_text)
+        return aiBasedDetection(tokens, custom_nlp)
     # return aiBasedDetection(" ".join(tokens), nlp)
     return False
 
@@ -87,7 +89,7 @@ def main():
     
     if args.ai:
         nlp = spacy.load("en_core_web_md")
-        localNLP = spacy.load(source_dir.parent.joinpath("output/model-last").resolve())
+        custom_nlp = spacy.load(source_dir.parent.joinpath("output/model-last").resolve())
         # print("With AI")
     else:
         nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
@@ -95,14 +97,14 @@ def main():
     if args.text:
         for i in args.text:
             if args.ai:
-                print("[Toxic]: " + i if detectToxicity(i, toxic_keywords, nlp, localNLP, args.ai) else "[Non-toxic]: " + i)
+                print("[Toxic]: " + i if detectToxicity(i, toxic_keywords, nlp, custom_nlp, args.ai) else "[Non-toxic]: " + i)
             else:
                 print("[Toxic]: " + i if detectToxicity(i, toxic_keywords, nlp, None, args.ai) else "[Non-toxic]: " + i)
     else:
-        main_test(test_cases, toxic_keywords, nlp, localNLP)
+        main_test(test_cases, toxic_keywords, nlp, custom_nlp)
     
 
-def main_test(test_cases, toxic_keywords, nlp, localNLP):
+def main_test(test_cases, toxic_keywords, nlp, custom_nlp):
     # Main function to run toxicity detection on test cases.
     source_dir = Path(__file__).parent.resolve()
     
@@ -115,7 +117,7 @@ def main_test(test_cases, toxic_keywords, nlp, localNLP):
         total += 1
         comment = i["comment"]
         expected_result = i["expected"]
-        is_toxic = detectToxicity(comment, toxic_keywords, nlp, localNLP)
+        is_toxic = detectToxicity(comment, toxic_keywords, nlp, custom_nlp)
         actual_result = "Toxic" if is_toxic else "Non-Toxic"
         if actual_result == expected_result:
             pass_test_case = True

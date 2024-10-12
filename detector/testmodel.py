@@ -1,7 +1,9 @@
 import spacy
+from pathlib import Path
 
 if __name__ == "__main__":
-  nlp = spacy.load("../output/model-last")
+  source_dir = Path(__file__).parent.resolve()
+  nlp = spacy.load(source_dir.parent.joinpath("output/model-last").resolve())
   doc = nlp("great job, it works so well")
   print(doc.text)
   print(doc.cats)
