@@ -13,11 +13,13 @@ Run these commands in your preferred terminal.
 ## Prepare Local SpaCy AI Model
 On GNU/Linux:
 ```
-./scripts/script.sh
+cd scripts
+./script.sh
 ```
 On Windows:
 ```
-.\scripts\script.bat
+cd scripts
+.\script.bat
 ```
 
 ## Usage
