@@ -10,6 +10,16 @@ python -m spacy download en_core_web_md
 ```
 Run these commands in your preferred terminal.
 
+## Prepare Local SpaCy AI Model
+On GNU/Linux:
+```
+./scripts/script.sh
+```
+On Windows:
+```
+.\scripts\script.bat
+```
+
 ## Usage
 ```
 usage: Bad Comment Detector [-h] [-t Text [Text ...]] [--no-ai]
