@@ -3,6 +3,7 @@ from spacy.tokens import DocBin
 from pathlib import Path
 
 import helper
+import parser
 
 # Project root directory
 root_dir = Path(__file__).parent.parent.resolve()
@@ -30,7 +31,7 @@ root_dir = Path(__file__).parent.parent.resolve()
 #   return l
 
 def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
-  t = helper.readCSVFromFile(root_dir.joinpath("assets/labeled_data.csv").resolve())
+  t = helper.readCSVFromFile(root_dir.joinpath("assets/training/labeled_data.csv").resolve())
   # print("Length: " + str(len(t)))
   l = []
   if endRange == None:
@@ -40,7 +41,8 @@ def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
   # print(t[1][6])
   for i in range(startRange, endRange):
     # print(t[6])
-    doc1 = nlp(t[i][6])
+    comment = parser.cleanText(t[i][6])
+    doc1 = nlp(comment)
     if t[i][5] == "0" or t[i][5] == "1":
       # print("Hello")
       doc1.cats["toxic"] = 1
@@ -53,7 +55,7 @@ def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
   return l
 
 def loadYoutubeComments(nlp, startRange, endRange):
-  t = helper.readCSVFromFile(root_dir.joinpath("assets/youtoxic_english_1000.csv").resolve())
+  t = helper.readCSVFromFile(root_dir.joinpath("assets/training/youtoxic_english_1000.csv").resolve())
   # print(len(t))
   l = []
   if endRange == None:
@@ -63,7 +65,8 @@ def loadYoutubeComments(nlp, startRange, endRange):
   # print(t[1][6])
   for i in range(startRange, endRange):
     # print(t[6])
-    doc1 = nlp(t[i][2])
+    comment = parser.cleanText(t[i][2])
+    doc1 = nlp(comment)
     isToxic = False
     for j in range(3, 15):
       if t[i][j] == "TRUE":
@@ -81,7 +84,7 @@ def loadYoutubeComments(nlp, startRange, endRange):
   return l
 
 def loadTCCC(nlp, startRange, endRange):
-  t = helper.readCSVFromFile(root_dir.joinpath("assets/youtoxic_english_1000.csv").resolve())
+  t = helper.readCSVFromFile(root_dir.joinpath("assets/training/youtoxic_english_1000.csv").resolve())
   # print("Length is " + str(len(t)))
   # print("Comment: " + t[1][1])
   l = []
@@ -90,7 +93,8 @@ def loadTCCC(nlp, startRange, endRange):
   print(endRange)
   for i in range(startRange, endRange):
     # print(t[6])
-    doc1 = nlp(t[i][1])
+    comment = parser.cleanText(t[i][1])
+    doc1 = nlp(comment)
     isToxic = False
     for j in range(2, 8):
       if t[i][j] == "1":
