@@ -1,7 +1,12 @@
 import spacy
 from spacy.tokens import DocBin
+from pathlib import Path
 
 import helper
+
+# Project root directory
+root_dir = Path(__file__).parent.parent.resolve()
+
 # import main
 
 # def loadAndPrepareDataSet(nlp):
@@ -25,7 +30,7 @@ import helper
 #   return l
 
 def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
-  t = helper.readCSVFromFile("../assets/labeled_data.csv")
+  t = helper.readCSVFromFile(root_dir.joinpath("assets/labeled_data.csv").resolve())
   # print("Length: " + str(len(t)))
   l = []
   if endRange == None:
@@ -48,7 +53,7 @@ def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
   return l
 
 def loadYoutubeComments(nlp, startRange, endRange):
-  t = helper.readCSVFromFile("../assets/youtoxic_english_1000.csv")
+  t = helper.readCSVFromFile(root_dir.joinpath("assets/youtoxic_english_1000.csv").resolve())
   # print(len(t))
   l = []
   if endRange == None:
@@ -76,7 +81,7 @@ def loadYoutubeComments(nlp, startRange, endRange):
   return l
 
 def loadTCCC(nlp, startRange, endRange):
-  t = helper.readCSVFromFile("../assets/train.csv")
+  t = helper.readCSVFromFile(root_dir.joinpath("assets/youtoxic_english_1000.csv").resolve())
   # print("Length is " + str(len(t)))
   # print("Comment: " + t[1][1])
   l = []
@@ -126,7 +131,7 @@ if __name__ == "__main__":
   # print(len(validationData))
   print("------ Saving data ------")
   binaryTrainData = DocBin(docs=trainData)
-  binaryTrainData.to_disk("../data/train.spacy")
+  binaryTrainData.to_disk(root_dir.joinpath("data/train.spacy").resolve())
   binaryValidData = DocBin(docs=validationData)
-  binaryValidData.to_disk("../data/valid.spacy")
+  binaryValidData.to_disk(root_dir.joinpath("data/valid.spacy").resolve())
   print("------ DONE ------")

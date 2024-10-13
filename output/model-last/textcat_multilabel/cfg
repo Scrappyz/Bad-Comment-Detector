@@ -1,0 +1,7 @@
+{
+  "labels":[
+    "toxic",
+    "non-toxic"
+  ],
+  "threshold":0.5
+}

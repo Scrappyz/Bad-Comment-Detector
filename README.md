@@ -10,16 +10,10 @@ python -m spacy download en_core_web_md
 ```
 Run these commands in your preferred terminal.
 
-## Prepare Local SpaCy AI Model
-On GNU/Linux:
+## Train SpaCy AI Model
 ```
 cd scripts
-./script.sh
-```
-On Windows:
-```
-cd scripts
-.\script.bat
+python train.py
 ```
 
 ## Usage
@@ -34,4 +28,8 @@ options:
 Navigate to the `detector` directory and run `main.py` with the `-t` flag to test a comment.
 ```
 python main.py -t "your comment to test"
+```
+Also allows multiple comments.
+```
+python main.py -t "first comment" "second comment" "third comment"
 ```

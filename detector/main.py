@@ -52,13 +52,12 @@ def aiBasedDetection(tokens, nlp):
     # Detect toxicity using spaCy's AI-based model.
 
     # Assuming the model's 'cats' attribute gives the category probabilities
-    print(tokens.cats)
     if 'toxic' in tokens.cats and tokens.cats['toxic'] > 0.7:
         return True  # Toxic based on AI model
     
     return False
 
-def detectToxicity(text, keywords: set, nlp, custom_nlp, ai=True, threshold=65):
+def detectToxicity(text, keywords: set, nlp, custom_nlp, ai=True, threshold=65, debug=False):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
     cleaned_text = cleanText(text, keywords)
@@ -66,11 +65,16 @@ def detectToxicity(text, keywords: set, nlp, custom_nlp, ai=True, threshold=65):
     
     # Step 2: Rule-based detection
     if ruleBasedDetection(tokens, keywords):
+        if debug:
+            print("Detection: Rule-based")
         return True  # Mark as toxic if rule-based approach detects it
     
     # Step 3: AI-based detection
     if ai:
         tokens = custom_nlp(cleaned_text)
+        if debug:
+            print("Detection: AI")
+            print(tokens.cats)
         return aiBasedDetection(tokens, custom_nlp)
     # return aiBasedDetection(" ".join(tokens), nlp)
     return False
@@ -84,6 +88,7 @@ def main():
     parser = argparse.ArgumentParser("Bad Comment Detector")
     parser.add_argument("-t", dest="text", metavar="Text", nargs='+', type=str, help="Comment to detect", required=False)
     parser.add_argument("--no-ai", dest="ai", action="store_false", required=False, help="Disable AI filter")
+    parser.add_argument("-d", "--debug", dest="debug", action="store_true", required=False, help="Debug mode")
     
     args = parser.parse_args()
     
@@ -93,13 +98,16 @@ def main():
         # print("With AI")
     else:
         nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
+        custom_nlp = None
     
     if args.text:
+        print("==========================")
         for i in args.text:
-            if args.ai:
-                print("[Toxic]: " + i if detectToxicity(i, toxic_keywords, nlp, custom_nlp, args.ai) else "[Non-toxic]: " + i)
-            else:
-                print("[Toxic]: " + i if detectToxicity(i, toxic_keywords, nlp, None, args.ai) else "[Non-toxic]: " + i)
+            print("Comment:", i)
+            is_toxic = detectToxicity(i, toxic_keywords, nlp, custom_nlp, args.ai, debug=args.debug)
+            print("Result: ", end="")
+            print("Toxic" if is_toxic else "Non-toxic")
+            print("==========================")
     else:
         main_test(test_cases, toxic_keywords, nlp, custom_nlp)
     

@@ -18,4 +18,6 @@ detector/__pycache__
 !setup.py
 !data/
 !data/**
+!output/
+!output/**
 !.gitattributes
