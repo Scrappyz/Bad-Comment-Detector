@@ -1,45 +1,8 @@
 import argparse
-import spacy
-import contractions
 from pathlib import Path
-
 import parser
 import helper
-
-def cleanText(text: str, word_set) -> str:
-    # Mapping for leetspeak to regular characters
-    leet_map = {
-        '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't',
-        '@': 'a', '$': 's', '(': 'c'
-    }
-
-    wildcards = {
-        '*', '#'
-    }
-
-    text = contractions.fix(text)
-    
-    # print("1.) ", text)
-    cleaned = ""
-    for i in text.lower():
-        if i in leet_map:
-            cleaned += leet_map[i]
-            continue
-        
-        cleaned += i
-    
-    # print("2.) ", cleaned)
-    cleaned = parser.normalizeWildcards(cleaned, wildcards)
-    # print("3.) ", cleaned)
-    
-    matches = parser.findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
-    
-    for k, v in matches.items():
-        cleaned = cleaned.replace(k, v)
-    
-    # print("4.) ", cleaned)
-    
-    return cleaned
+import spacy
 
 def ruleBasedDetection(tokens, keywords: set):
     # Detect toxicity using rule-based regex patterns.
@@ -60,7 +23,11 @@ def aiBasedDetection(tokens, nlp):
 def detectToxicity(text, keywords: set, nlp, custom_nlp, ai=True, threshold=65, debug=False):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
-    cleaned_text = cleanText(text, keywords)
+    cleaned_text = parser.cleanText(text, keywords)
+    
+    if debug:
+        print("Cleaned:", cleaned_text)
+        
     tokens = nlp(cleaned_text)
     
     # Step 2: Rule-based detection
@@ -101,7 +68,7 @@ def main():
     else:
         nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
         custom_nlp = None
-    
+
     if args.text:
         print("==========================")
         for i in args.text:

@@ -1,4 +1,7 @@
 import ahocorasick
+import contractions
+import string
+import re
 
 def createDict(base):
   d = {}
@@ -206,6 +209,51 @@ def main_test():
   print(isSubstring("bigbird", ["bird", "big"]))
   # parseBadWordWithAhoCorasick("bigbird", ["bird", "big"])
   # fuzzyMatchWord("bigbird", ["bird", "big"])
+  
+def cleanText(text: str, word_set) -> str:
+    # Mapping for leetspeak to regular characters
+    leet_map = {
+        '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't',
+        '@': 'a', '$': 's', '(': 'c'
+    }
+
+    wildcards = {
+        '*', '#'
+    }
+    
+    # Remove HTML
+    text = re.sub(r"http\S+", "", text)
+    
+    # Remove trailing whitespace
+    text = text.strip()
+    
+    # Remove non-ascii characters
+    printable_chars = set(string.printable)
+    text = "".join(filter(lambda x: x in printable_chars, text))
+    
+    text = contractions.fix(text)
+    
+    # print("1.) ", text)
+    cleaned = ""
+    for i in text.lower():
+        if i in leet_map:
+            cleaned += leet_map[i]
+            continue
+        
+        cleaned += i
+    
+    # print("2.) ", cleaned)
+    cleaned = normalizeWildcards(cleaned, wildcards)
+    # print("3.) ", cleaned)
+    
+    matches = findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
+    
+    for k, v in matches.items():
+        cleaned = cleaned.replace(k, v)
+    
+    # print("4.) ", cleaned)
+    
+    return cleaned
 
 if __name__ == "__main__":
   main_test()
