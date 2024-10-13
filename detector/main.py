@@ -23,7 +23,7 @@ def aiBasedDetection(tokens, nlp):
 def detectToxicity(text, keywords: set, nlp, custom_nlp, ai=True, threshold=65, debug=False):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
-    cleaned_text = parser.cleanText(text, keywords)
+    cleaned_text = parser.cleanText(text, keywords, nlp)
     
     if debug:
         print("Cleaned:", cleaned_text)
@@ -68,7 +68,7 @@ def main():
     else:
         nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
         custom_nlp = None
-
+        
     if args.text:
         print("==========================")
         for i in args.text:

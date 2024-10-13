@@ -2,6 +2,10 @@ import ahocorasick
 import contractions
 import string
 import re
+import spacy
+from pathlib import Path
+
+import helper
 
 def createDict(base):
   d = {}
@@ -210,7 +214,7 @@ def main_test():
   # parseBadWordWithAhoCorasick("bigbird", ["bird", "big"])
   # fuzzyMatchWord("bigbird", ["bird", "big"])
   
-def cleanText(text: str, word_set) -> str:
+def cleanText(text: str, word_set, tokenizer) -> str:
     # Mapping for leetspeak to regular characters
     leet_map = {
         '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't',
@@ -241,17 +245,18 @@ def cleanText(text: str, word_set) -> str:
             continue
         
         cleaned += i
+        
+    tokens = tokenizer(cleaned)
+    stopwords = set(tokenizer.Defaults.stop_words)
+    stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
+    cleaned = " ".join([i.text for i in tokens if i.text not in stopwords])
     
-    # print("2.) ", cleaned)
     cleaned = normalizeWildcards(cleaned, wildcards)
-    # print("3.) ", cleaned)
     
     matches = findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
     
     for k, v in matches.items():
         cleaned = cleaned.replace(k, v)
-    
-    # print("4.) ", cleaned)
     
     return cleaned
 
