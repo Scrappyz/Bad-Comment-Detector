@@ -18,12 +18,13 @@ python train.py
 
 ## Usage
 ```
-usage: Bad Comment Detector [-h] [-t Text [Text ...]] [--no-ai]
+usage: Bad Comment Detector [-h] [-t Text [Text ...]] [--no-ai] [-d]
 
 options:
   -h, --help          show this help message and exit
   -t Text [Text ...]  Comment to detect
   --no-ai             Disable AI filter
+  -d, --debug         Debug mode
 ```
 Navigate to the `detector` directory and run `main.py` with the `-t` flag to test a comment.
 ```
