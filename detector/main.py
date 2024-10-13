@@ -74,7 +74,7 @@ def detectToxicity(text, keywords: set, nlp, custom_nlp, ai=True, threshold=65, 
         tokens = custom_nlp(cleaned_text)
         if debug:
             print("Detection: AI")
-            print(tokens.cats)
+            print("Categories:", tokens.cats)
         return aiBasedDetection(tokens, custom_nlp)
     # return aiBasedDetection(" ".join(tokens), nlp)
     return False
