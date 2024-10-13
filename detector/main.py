@@ -20,10 +20,10 @@ def aiBasedDetection(tokens, nlp):
     
     return False
 
-def detectToxicity(text, keywords: set, nlp, custom_nlp, ai=True, threshold=65, debug=False):
+def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, ai=True, threshold=65, debug=False):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
-    cleaned_text = parser.cleanText(text, keywords, nlp)
+    cleaned_text = parser.cleanText(text, keywords, stopwords, nlp)
     
     if debug:
         print("Cleaned:", cleaned_text)
@@ -52,7 +52,6 @@ def main():
     source_dir = Path(__file__).parent.resolve()
     asset_dir = source_dir.parent.joinpath("assets")
     test_cases = list(helper.readJsonFromFile(asset_dir.joinpath("test_cases.json")))
-    toxic_keywords = set(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
     
     parser = argparse.ArgumentParser("Bad Comment Detector")
     parser.add_argument("-t", dest="text", metavar="Text", nargs='+', type=str, help="Comment to detect", required=False)
@@ -69,11 +68,15 @@ def main():
         nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
         custom_nlp = None
         
+    toxic_keywords = set(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
+    stopwords = set(nlp.Defaults.stop_words)
+    stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
+        
     if args.text:
         print("==========================")
         for i in args.text:
             print("Comment:", i)
-            is_toxic = detectToxicity(i, toxic_keywords, nlp, custom_nlp, args.ai, debug=args.debug)
+            is_toxic = detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, args.ai, debug=args.debug)
             print("Result: ", end="")
             print("Toxic" if is_toxic else "Non-toxic")
             print("==========================")

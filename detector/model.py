@@ -30,7 +30,7 @@ root_dir = Path(__file__).parent.parent.resolve()
 #     l.append(doc2)
 #   return l
 
-def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
+def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange, keywords, stopwords):
   t = helper.readCSVFromFile(root_dir.joinpath("assets/training/labeled_data.csv").resolve())
   # print("Length: " + str(len(t)))
   l = []
@@ -41,7 +41,7 @@ def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
   # print(t[1][6])
   for i in range(startRange, endRange):
     # print(t[6])
-    comment = parser.cleanText(t[i][6])
+    comment = parser.cleanText(t[i][6], keywords, stopwords, nlp)
     doc1 = nlp(comment)
     if t[i][5] == "0" or t[i][5] == "1":
       # print("Hello")
@@ -54,7 +54,7 @@ def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange):
     l.append(doc1)
   return l
 
-def loadYoutubeComments(nlp, startRange, endRange):
+def loadYoutubeComments(nlp, startRange, endRange, keywords, stopwords):
   t = helper.readCSVFromFile(root_dir.joinpath("assets/training/youtoxic_english_1000.csv").resolve())
   # print(len(t))
   l = []
@@ -65,7 +65,7 @@ def loadYoutubeComments(nlp, startRange, endRange):
   # print(t[1][6])
   for i in range(startRange, endRange):
     # print(t[6])
-    comment = parser.cleanText(t[i][2])
+    comment = parser.cleanText(t[i][2], keywords, stopwords, nlp)
     doc1 = nlp(comment)
     isToxic = False
     for j in range(3, 15):
@@ -83,7 +83,7 @@ def loadYoutubeComments(nlp, startRange, endRange):
     l.append(doc1)
   return l
 
-def loadTCCC(nlp, startRange, endRange):
+def loadTCCC(nlp, startRange, endRange, keywords, stopwords):
   t = helper.readCSVFromFile(root_dir.joinpath("assets/training/youtoxic_english_1000.csv").resolve())
   # print("Length is " + str(len(t)))
   # print("Comment: " + t[1][1])
@@ -93,7 +93,7 @@ def loadTCCC(nlp, startRange, endRange):
   print(endRange)
   for i in range(startRange, endRange):
     # print(t[6])
-    comment = parser.cleanText(t[i][1])
+    comment = parser.cleanText(t[i][1], keywords, stopwords, nlp)
     doc1 = nlp(comment)
     isToxic = False
     for j in range(2, 8):
@@ -111,26 +111,30 @@ def loadTCCC(nlp, startRange, endRange):
     l.append(doc1)
   return l
 
-def loadAllDPossibleTrainDataSets(nlp):
+def loadAllDPossibleTrainDataSets(nlp, keywords, stopwords):
   l = []
-  l += loadAndPrepareDataSetFromCSV(nlp, 1, 18588)
-  l += loadYoutubeComments(nlp, 1, 750)
-  l += loadTCCC(nlp, 1, 119679)
+  l += loadAndPrepareDataSetFromCSV(nlp, 1, 18588, keywords, stopwords)
+  l += loadYoutubeComments(nlp, 1, 750, keywords, stopwords)
+  l += loadTCCC(nlp, 1, 119679, keywords, stopwords)
   return l
 
-def loadAllPossibleValidationDataSets(nlp):
+def loadAllPossibleValidationDataSets(nlp, keywords, stopwords):
   l = []
-  l += loadAndPrepareDataSetFromCSV(nlp, 18588, None)
-  l += loadYoutubeComments(nlp, 750, None)
-  l += loadTCCC(nlp, 119679, None)
+  l += loadAndPrepareDataSetFromCSV(nlp, 18588, None, keywords, stopwords)
+  l += loadYoutubeComments(nlp, 750, None, keywords, stopwords)
+  l += loadTCCC(nlp, 119679, None, keywords, stopwords)
   return l
 
 if __name__ == "__main__":
   print("----- model.py -----")
   print("Preparing data sets...")
   nlp = spacy.load("en_core_web_md")
-  trainData = loadAllDPossibleTrainDataSets(nlp)
-  validationData = loadAllPossibleValidationDataSets(nlp)
+  keywords = set(helper.readJsonFromFile(root_dir.joinpath("assets/toxic_keywords.json").resolve()))
+  stopwords = set(nlp.Defaults.stop_words)
+  stopwords -= set(helper.readJsonFromFile(root_dir.joinpath("assets/exclude_stopwords.json").resolve()))
+  
+  trainData = loadAllDPossibleTrainDataSets(nlp, keywords, stopwords)
+  validationData = loadAllPossibleValidationDataSets(nlp, keywords, stopwords)
   # print(len(trainData))
   # print(len(validationData))
   print("------ Saving data ------")

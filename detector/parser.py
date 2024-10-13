@@ -214,7 +214,7 @@ def main_test():
   # parseBadWordWithAhoCorasick("bigbird", ["bird", "big"])
   # fuzzyMatchWord("bigbird", ["bird", "big"])
   
-def cleanText(text: str, word_set, tokenizer) -> str:
+def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     # Mapping for leetspeak to regular characters
     leet_map = {
         '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't',
@@ -247,9 +247,7 @@ def cleanText(text: str, word_set, tokenizer) -> str:
         cleaned += i
         
     tokens = tokenizer(cleaned)
-    stopwords = set(tokenizer.Defaults.stop_words)
-    stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
-    cleaned = " ".join([i.text for i in tokens if i.text not in stopwords])
+    cleaned = " ".join([i.text for i in tokens if i.text not in stopword_set])
     
     cleaned = normalizeWildcards(cleaned, wildcards)
     
