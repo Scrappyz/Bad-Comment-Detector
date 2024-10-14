@@ -111,7 +111,7 @@ def loadTCCC(nlp, startRange, endRange, keywords, stopwords):
     l.append(doc1)
   return l
 
-def loadAllDPossibleTrainDataSets(nlp, keywords, stopwords):
+def loadAllPossibleTrainDataSets(nlp, keywords, stopwords):
   l = []
   l += loadAndPrepareDataSetFromCSV(nlp, 1, 18588, keywords, stopwords)
   l += loadYoutubeComments(nlp, 1, 750, keywords, stopwords)
@@ -133,7 +133,7 @@ if __name__ == "__main__":
   stopwords = set(nlp.Defaults.stop_words)
   stopwords -= set(helper.readJsonFromFile(root_dir.joinpath("assets/exclude_stopwords.json").resolve()))
   
-  trainData = loadAllDPossibleTrainDataSets(nlp, keywords, stopwords)
+  trainData = loadAllPossibleTrainDataSets(nlp, keywords, stopwords)
   validationData = loadAllPossibleValidationDataSets(nlp, keywords, stopwords)
   # print(len(trainData))
   # print(len(validationData))
