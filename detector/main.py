@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-import detector.parser_1 as parser_1
+import parser_1
 import helper
 import spacy
 

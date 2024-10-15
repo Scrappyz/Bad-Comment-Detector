@@ -3,7 +3,7 @@ from spacy.tokens import DocBin
 from pathlib import Path
 
 import helper
-import detector.parser_1 as parser_1
+import parser_1
 
 # Project root directory
 root_dir = Path(__file__).parent.parent.resolve()
