@@ -113,16 +113,9 @@ def loadTCCC(nlp, startRange, endRange, keywords, stopwords):
 
 def loadAllPossibleTrainDataSets(nlp, keywords, stopwords):
   l = []
-  l += loadAndPrepareDataSetFromCSV(nlp, 1, 18588, keywords, stopwords)
-  l += loadYoutubeComments(nlp, 1, 750, keywords, stopwords)
-  l += loadTCCC(nlp, 1, 119679, keywords, stopwords)
-  return l
-
-def loadAllPossibleValidationDataSets(nlp, keywords, stopwords):
-  l = []
-  l += loadAndPrepareDataSetFromCSV(nlp, 18588, None, keywords, stopwords)
-  l += loadYoutubeComments(nlp, 750, None, keywords, stopwords)
-  l += loadTCCC(nlp, 119679, None, keywords, stopwords)
+  l += loadAndPrepareDataSetFromCSV(nlp, 1, None, keywords, stopwords)
+  l += loadYoutubeComments(nlp, 1, None, keywords, stopwords)
+  l += loadTCCC(nlp, 1, None, keywords, stopwords)
   return l
 
 if __name__ == "__main__":
@@ -134,12 +127,10 @@ if __name__ == "__main__":
   stopwords -= set(helper.readJsonFromFile(root_dir.joinpath("assets/exclude_stopwords.json").resolve()))
   
   trainData = loadAllPossibleTrainDataSets(nlp, keywords, stopwords)
-  validationData = loadAllPossibleValidationDataSets(nlp, keywords, stopwords)
   # print(len(trainData))
   # print(len(validationData))
   print("------ Saving data ------")
   binaryTrainData = DocBin(docs=trainData)
   binaryTrainData.to_disk(root_dir.joinpath("data/train.spacy").resolve())
-  binaryValidData = DocBin(docs=validationData)
-  binaryValidData.to_disk(root_dir.joinpath("data/valid.spacy").resolve())
+  binaryTrainData.to_disk(root_dir.joinpath("data/valid.spacy").resolve())
   print("------ DONE ------")
