@@ -3,7 +3,7 @@ from spacy.tokens import DocBin
 from pathlib import Path
 
 import helper
-import parser
+import detector.parser_1 as parser_1
 
 # Project root directory
 root_dir = Path(__file__).parent.parent.resolve()
@@ -41,7 +41,7 @@ def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange, keywords, stopwords)
   # print(t[1][6])
   for i in range(startRange, endRange):
     # print(t[6])
-    comment = parser.cleanText(t[i][6], keywords, stopwords, nlp)
+    comment = parser_1.cleanText(t[i][6], keywords, stopwords, nlp)
     doc1 = nlp(comment)
     if t[i][5] == "0" or t[i][5] == "1":
       # print("Hello")
@@ -65,7 +65,7 @@ def loadYoutubeComments(nlp, startRange, endRange, keywords, stopwords):
   # print(t[1][6])
   for i in range(startRange, endRange):
     # print(t[6])
-    comment = parser.cleanText(t[i][2], keywords, stopwords, nlp)
+    comment = parser_1.cleanText(t[i][2], keywords, stopwords, nlp)
     doc1 = nlp(comment)
     isToxic = False
     for j in range(3, 15):
@@ -93,7 +93,7 @@ def loadTCCC(nlp, startRange, endRange, keywords, stopwords):
   print(endRange)
   for i in range(startRange, endRange):
     # print(t[6])
-    comment = parser.cleanText(t[i][1], keywords, stopwords, nlp)
+    comment = parser_1.cleanText(t[i][1], keywords, stopwords, nlp)
     doc1 = nlp(comment)
     isToxic = False
     for j in range(2, 8):

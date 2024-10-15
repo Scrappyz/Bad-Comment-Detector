@@ -1,13 +1,13 @@
 import argparse
 from pathlib import Path
-import parser
+import detector.parser_1 as parser_1
 import helper
 import spacy
 
 def ruleBasedDetection(tokens, keywords: set):
     # Detect toxicity using rule-based regex patterns.
     for i in tokens:
-        if parser.isSubstring(str(i), keywords):
+        if parser_1.isSubstring(str(i), keywords):
             return True
     return False
 
@@ -23,7 +23,7 @@ def aiBasedDetection(tokens, nlp):
 def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, ai=True, threshold=65, debug=False):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
-    cleaned_text = parser.cleanText(text, keywords, stopwords, nlp)
+    cleaned_text = parser_1.cleanText(text, keywords, stopwords, nlp)
     
     if debug:
         print("Cleaned:", cleaned_text)
