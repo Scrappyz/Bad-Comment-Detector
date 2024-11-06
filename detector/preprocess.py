@@ -4,6 +4,7 @@ import string
 import re
 import spacy
 from pathlib import Path
+from thefuzz import fuzz
 
 import helper
 
@@ -47,6 +48,22 @@ def normalizeWildcards(text: str, wildcard_set: set) -> str:
         normalized += i
         
     return normalized
+  
+def fuzzyMatchReplace(word, word_list, threshold) -> str:
+    if not word:
+        return ""
+    
+    temp = word[0]
+    for i in word:
+        if i == temp[-1]:
+            continue
+        temp += i
+        
+    for i in word_list:
+        if fuzz.ratio(temp, i) >= threshold:
+            return i
+          
+    return word
   
 def findMatchingSubstringsWithWildcardsAndReplacement(text, word_list, wildcards: str) -> dict:
     substrings = {}
@@ -108,7 +125,7 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     
     text = contractions.fix(text)
     
-    # print("1.) ", text)
+    # Replace obfuscated characters
     cleaned = ""
     for i in text.lower():
         if i in leet_map:
@@ -116,21 +133,29 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
             continue
         
         cleaned += i
-        
-    tokens = tokenizer(cleaned)
-    cleaned = " ".join([i.text for i in tokens if i.text not in stopword_set])
     
+    # Remove all stopwords
+    tokens = tokenizer(cleaned)
+    tokens = [i.text for i in tokens if i.text not in stopword_set]
+    cleaned = []
+    for i in tokens:
+        cleaned.append(fuzzyMatchReplace(str(i), word_set, 75))
+    
+    cleaned = " ".join(cleaned)
+    
+    # Replace all wildcards to a single wildcard (e.g. "f#dg*" -> "f*dg*")
     cleaned = normalizeWildcards(cleaned, wildcards)
     
+    # Replace all keywords to their proper wording (e.g. "f*dge" -> "fudge")
     matches = findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
-    
     for k, v in matches.items():
         cleaned = cleaned.replace(k, v)
     
     return cleaned
 
 def main():
-  print(isSubstring("bigbird", ["bird", "big"]))
+    nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
+    print(cleanText("f*ck you nniiiiggggaaaa", {"nigga", "fuck"}, {}, nlp))
 
 if __name__ == "__main__":
-  main()
+    main()
