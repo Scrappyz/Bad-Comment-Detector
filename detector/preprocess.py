@@ -123,9 +123,10 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     printable_chars = set(string.printable)
     text = "".join(filter(lambda x: x in printable_chars, text))
     
+    # Expand contractions (e.g. "you're" -> "you are")
     text = contractions.fix(text)
     
-    # Replace obfuscated characters
+    # Replace obfuscated characters (e.g. "$h1t" -> "shit")
     cleaned = ""
     for i in text.lower():
         if i in leet_map:
@@ -137,19 +138,21 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     # Remove all stopwords
     tokens = tokenizer(cleaned)
     tokens = [i.text for i in tokens if i.text not in stopword_set]
+    
+    # Replace all extended words (e.g. "niiiiggaa" -> "nigga")
     cleaned = []
     for i in tokens:
-        cleaned.append(fuzzyMatchReplace(str(i), word_set, 75))
+        cleaned.append(fuzzyMatchReplace(str(i), word_set, 70))
     
     cleaned = " ".join(cleaned)
     
     # Replace all wildcards to a single wildcard (e.g. "f#dg*" -> "f*dg*")
-    cleaned = normalizeWildcards(cleaned, wildcards)
+    # cleaned = normalizeWildcards(cleaned, wildcards)
     
-    # Replace all keywords to their proper wording (e.g. "f*dge" -> "fudge")
-    matches = findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
-    for k, v in matches.items():
-        cleaned = cleaned.replace(k, v)
+    # # Replace all keywords to their proper wording (e.g. "f*dge" -> "fudge")
+    # matches = findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
+    # for k, v in matches.items():
+    #     cleaned = cleaned.replace(k, v)
     
     return cleaned
 
