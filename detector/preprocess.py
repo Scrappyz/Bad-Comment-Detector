@@ -142,7 +142,7 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     # Replace all extended words (e.g. "niiiiggaa" -> "nigga")
     cleaned = []
     for i in tokens:
-        cleaned.append(fuzzyMatchReplace(str(i), word_set, 70))
+        cleaned.append(fuzzyMatchReplace(str(i), word_set, 80))
     
     cleaned = " ".join(cleaned)
     
