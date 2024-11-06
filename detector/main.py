@@ -4,7 +4,7 @@ import preprocess
 import helper
 import spacy
 
-def ruleBasedDetection(tokens, keywords: set):
+def ruleBasedDetection(tokens, keywords: set, debug=False):
     # Detect toxicity using rule-based regex patterns.
     for i in tokens:
         if preprocess.isSubstring(str(i), keywords):
@@ -91,7 +91,6 @@ def main_test(test_cases, toxic_keywords, nlp, custom_nlp):
     score = 0
     total = 0
     pass_test_case = False
-    # print(fuzz.ratio("a**hole", "asshole"));
 
     for i in test_cases:
         total += 1
