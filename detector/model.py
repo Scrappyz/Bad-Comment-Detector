@@ -8,114 +8,121 @@ import preprocess
 # Project root directory
 root_dir = Path(__file__).parent.parent.resolve()
 
-# import main
-
-# def loadAndPrepareDataSet(nlp):
-#   test_cases = list(helper.readJsonFromFile("../assets/test_cases.json"))
-#   l = []
-#   for t in test_cases:
-#     doc1 = nlp(t["comment"])
-#     doc2 = nlp(t["cleaned"])
-#     if t["expected"] == "Toxic":
-#       doc1.cats["toxic"] = 1
-#       doc1.cats["non-toxic"] = 0
-#       doc2.cats["toxic"] = 1
-#       doc2.cats["non-toxic"] = 0
-#     else:
-#       doc1.cats["toxic"] = 0
-#       doc1.cats["non-toxic"] = 1
-#       doc2.cats["toxic"] = 0
-#       doc2.cats["non-toxic"] = 1
-#     l.append(doc1)
-#     l.append(doc2)
-#   return l
-
-def loadAndPrepareDataSetFromCSV(nlp, startRange, endRange, keywords, stopwords):
+def loadLabeledData(nlp, startRange, endRange, keywords, stopwords):
   t = helper.readCSVFromFile(root_dir.joinpath("assets/training/labeled_data.csv").resolve())
-  # print("Length: " + str(len(t)))
   l = []
+  
   if endRange == None:
     endRange = len(t)
-  # print(endRange)
-  # print(t[1][5])
-  # print(t[1][6])
+
   for i in range(startRange, endRange):
-    # print(t[6])
     comment = preprocess.cleanText(t[i][6], keywords, stopwords, nlp)
     doc1 = nlp(comment)
+    
     if t[i][5] == "0" or t[i][5] == "1":
-      # print("Hello")
       doc1.cats["toxic"] = 1
       doc1.cats["non-toxic"] = 0
     else:
-      # print("Not")
       doc1.cats["toxic"] = 0
       doc1.cats["non-toxic"] = 1
+      
     l.append(doc1)
+    
   return l
 
 def loadYoutubeComments(nlp, startRange, endRange, keywords, stopwords):
   t = helper.readCSVFromFile(root_dir.joinpath("assets/training/youtoxic_english_1000.csv").resolve())
-  # print(len(t))
   l = []
+  
   if endRange == None:
     endRange = len(t)
-  # print(endRange)
-  # print(t[1][5])
-  # print(t[1][6])
+    
   for i in range(startRange, endRange):
-    # print(t[6])
     comment = preprocess.cleanText(t[i][2], keywords, stopwords, nlp)
     doc1 = nlp(comment)
     isToxic = False
+    
     for j in range(3, 15):
       if t[i][j] == "TRUE":
         isToxic = True
         break
+      
     if isToxic:
-      # print("Hello")
       doc1.cats["toxic"] = 1
       doc1.cats["non-toxic"] = 0
     else:
-      # print("Not")
       doc1.cats["toxic"] = 0
       doc1.cats["non-toxic"] = 1
+      
     l.append(doc1)
+    
   return l
 
-def loadTCCC(nlp, startRange, endRange, keywords, stopwords):
-  t = helper.readCSVFromFile(root_dir.joinpath("assets/training/youtoxic_english_1000.csv").resolve())
-  # print("Length is " + str(len(t)))
-  # print("Comment: " + t[1][1])
+def loadCustomDataset(nlp, start_range, end_range, keywords, stopwords):
+  t = helper.readCSVFromFile(root_dir.joinpath("assets/training/custom_data.csv").resolve())
   l = []
+  
+  if end_range == None:
+    end_range = len(t)
+    
+  for i in range(start_range, end_range):
+    comment = preprocess.cleanText(t[i][0], keywords, stopwords, nlp)
+    doc1 = nlp(comment)
+    is_toxic = False
+    
+    if t[i][1] == "1":
+        is_toxic = True
+      
+    if is_toxic:
+      doc1.cats["toxic"] = 1
+      doc1.cats["non-toxic"] = 0
+    else:
+      doc1.cats["toxic"] = 0
+      doc1.cats["non-toxic"] = 1
+      
+    l.append(doc1)
+    
+  return l
+
+def loadKaggleDataset(nlp, startRange, endRange, keywords, stopwords):
+  t = helper.readCSVFromFile(root_dir.joinpath("assets/training/kaggle_train_data.csv").resolve())
+  l = []
+  
   if endRange == None:
     endRange = len(t)
-  print(endRange)
+    
   for i in range(startRange, endRange):
-    # print(t[6])
+    # print("=================")
+    # print("Index:", i)
+    # print(t[i][1])
     comment = preprocess.cleanText(t[i][1], keywords, stopwords, nlp)
     doc1 = nlp(comment)
     isToxic = False
+    # print(comment)
+    # print("=================")
+    
     for j in range(2, 8):
       if t[i][j] == "1":
         isToxic = True
         break
+      
     if isToxic:
-      # print("Hello")
       doc1.cats["toxic"] = 1
       doc1.cats["non-toxic"] = 0
     else:
-      # print("Not")
       doc1.cats["toxic"] = 0
       doc1.cats["non-toxic"] = 1
+      
     l.append(doc1)
+    
   return l
 
 def loadAllPossibleTrainDataSets(nlp, keywords, stopwords):
   l = []
-  l += loadAndPrepareDataSetFromCSV(nlp, 1, None, keywords, stopwords)
+  l += loadLabeledData(nlp, 1, None, keywords, stopwords)
   l += loadYoutubeComments(nlp, 1, None, keywords, stopwords)
-  l += loadTCCC(nlp, 1, None, keywords, stopwords)
+  l += loadCustomDataset(nlp, 1, None, keywords, stopwords)
+  l += loadKaggleDataset(nlp, 1, 1000, keywords, stopwords)
   return l
 
 if __name__ == "__main__":

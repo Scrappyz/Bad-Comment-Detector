@@ -113,11 +113,14 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
         '*', '#'
     }
     
+    # Remove newlines
+    text = re.sub(r'[\r\n]+', '', text)
+    
     # Remove HTML
     text = re.sub(r"http\S+", "", text)
     
     # Remove trailing whitespace
-    text = text.strip()
+    text = re.sub(r'\s{2,}', ' ', text).strip()
     
     # Remove non-ascii characters
     printable_chars = set(string.printable)
