@@ -58,8 +58,8 @@ def loadYoutubeComments(nlp, startRange, endRange, keywords, stopwords):
     
   return l
 
-def loadCustomDataset(nlp, start_range, end_range, keywords, stopwords):
-  t = helper.readCSVFromFile(root_dir.joinpath("assets/training/custom_data.csv").resolve())
+def loadCustomDataset(file_path, nlp, start_range, end_range, keywords, stopwords):
+  t = helper.readCSVFromFile(file_path)
   l = []
   
   if end_range == None:
@@ -121,7 +121,8 @@ def loadAllPossibleTrainDataSets(nlp, keywords, stopwords):
   l = []
   l += loadLabeledData(nlp, 1, None, keywords, stopwords)
   l += loadYoutubeComments(nlp, 1, None, keywords, stopwords)
-  l += loadCustomDataset(nlp, 1, None, keywords, stopwords)
+  l += loadCustomDataset(root_dir.joinpath("assets/training/custom_data.csv").resolve(), nlp, 1, None, keywords, stopwords)
+  l += loadCustomDataset(root_dir.joinpath("assets/training/feedback_data.csv").resolve(), nlp, 1, None, keywords, stopwords)
   l += loadKaggleDataset(nlp, 1, 1000, keywords, stopwords)
   return l
 
