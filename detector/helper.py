@@ -1,5 +1,6 @@
 import csv
 import json
+from pathlib import Path
 
 def readTextFromFile(file_path: str) -> str:
     """Read text from a file."""
@@ -17,3 +18,6 @@ def readCSVFromFile(file_path):
         for line in csvFile:
             lines.append(line)
         return lines
+    
+def readConfigJson():
+    return readJsonFromFile(Path(__file__).parent.joinpath("config.json").resolve())

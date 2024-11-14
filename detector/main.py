@@ -51,7 +51,12 @@ def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, ai=True
 def main():
     source_dir = Path(__file__).parent.resolve()
     asset_dir = source_dir.parent.joinpath("assets")
+    config = helper.readConfigJson()
     test_cases = list(helper.readJsonFromFile(asset_dir.joinpath("test_cases.json")))
+    feedback_data_file = config["feedbackDataFile"]
+    
+    if not Path(feedback_data_file).is_absolute():
+        feedback_data_file = Path(source_dir).joinpath(feedback_data_file).resolve()
     
     parser = argparse.ArgumentParser("Bad Comment Detector")
     parser.add_argument("-t", dest="text", metavar="Text", nargs='+', type=str, help="Comment to detect", required=False)
@@ -76,7 +81,7 @@ def main():
         print("==========================")
         for i in args.text:
             print("Comment:", i)
-            is_toxic = detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, args.ai, debug=args.debug)
+            is_toxic = detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, args.ai, config["threshold"], args.debug)
             print("Result: ", end="")
             print("Toxic" if is_toxic else "Non-toxic")
             print("==========================")
