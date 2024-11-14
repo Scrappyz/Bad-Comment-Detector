@@ -20,7 +20,7 @@ def aiBasedDetection(tokens, nlp):
     
     return False
 
-def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, ai=True, threshold=65, debug=False):
+def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, ai=True, threshold=60, debug=False):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
     cleaned_text = preprocess.cleanText(text, keywords, stopwords, nlp)
