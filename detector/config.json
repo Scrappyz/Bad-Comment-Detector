@@ -1,4 +1,4 @@
 {
-    "threshold": 60,
+    "threshold": 50,
     "feedbackDataFile": "../assets/training/feedback_data.csv"
 }

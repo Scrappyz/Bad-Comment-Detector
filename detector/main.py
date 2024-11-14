@@ -51,7 +51,9 @@ def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, ai=True
 def main():
     source_dir = Path(__file__).parent.resolve()
     asset_dir = source_dir.parent.joinpath("assets")
-    config = helper.readConfigJson()
+    config_file = Path(__file__).parent.joinpath("config.json").resolve()
+    # print(config_file)
+    config = helper.readJsonFromFile(config_file)
     test_cases = list(helper.readJsonFromFile(asset_dir.joinpath("test_cases.json")))
     feedback_data_file = config["feedbackDataFile"]
     
@@ -62,8 +64,14 @@ def main():
     parser.add_argument("-t", dest="text", metavar="Text", nargs='+', type=str, help="Comment to detect", required=False)
     parser.add_argument("--no-ai", dest="ai", action="store_false", required=False, help="Disable AI filter")
     parser.add_argument("-d", "--debug", dest="debug", action="store_true", required=False, help="Debug mode")
+    parser.add_argument("--set-threshold", dest="threshold", nargs=1, type=int, help="Set toxicity threshold from 0-100")
     
     args = parser.parse_args()
+    
+    if args.threshold:
+        config["threshold"] = args.threshold[0]
+        helper.writeJsonToFile(config_file, config)
+        return
     
     if args.ai:
         nlp = spacy.load("en_core_web_md")

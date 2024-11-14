@@ -2,12 +2,12 @@ import csv
 import json
 from pathlib import Path
 
-def readTextFromFile(file_path: str) -> str:
+def readTextFromFile(file_path) -> str:
     """Read text from a file."""
     with open(file_path, 'r') as f:
         return f.read()
     
-def readJsonFromFile(file_path: str):
+def readJsonFromFile(file_path):
     with open(file_path, "r") as f:
         return json.load(f)
 
@@ -18,6 +18,10 @@ def readCSVFromFile(file_path):
         for line in csvFile:
             lines.append(line)
         return lines
-    
-def readConfigJson():
-    return readJsonFromFile(Path(__file__).parent.joinpath("config.json").resolve())
+
+def writeJsonToFile(file_path: str, j):
+    if type(j) != json:
+        j = json.dumps(j, indent=4)
+        
+    with open(file_path, 'w') as f:
+        f.write(j)
