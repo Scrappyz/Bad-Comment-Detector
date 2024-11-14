@@ -3,6 +3,7 @@ from pathlib import Path
 import preprocess
 import helper
 import spacy
+from os import getcwd
 
 def ruleBasedDetection(tokens, keywords: set, debug=False):
     # Detect toxicity using rule-based regex patterns.
@@ -65,11 +66,17 @@ def main():
     parser.add_argument("--no-ai", dest="ai", action="store_false", required=False, help="Disable AI filter")
     parser.add_argument("-d", "--debug", dest="debug", action="store_true", required=False, help="Debug mode")
     parser.add_argument("--set-threshold", dest="threshold", nargs=1, type=int, help="Set toxicity threshold from 0-100")
+    parser.add_argument("--set-feedback-file", dest="feedback_file", nargs=1, type=str, help="Set CSV file to put feedback")
     
     args = parser.parse_args()
     
     if args.threshold:
         config["threshold"] = args.threshold[0]
+        helper.writeJsonToFile(config_file, config)
+        return
+    
+    if args.feedback_file:
+        config["feedbackDataFile"] = str(Path(getcwd()).joinpath(args.feedback_file[0]).resolve()) if not Path(args.feedback_file[0]).is_absolute() else args.feedback_file[0]
         helper.writeJsonToFile(config_file, config)
         return
     
