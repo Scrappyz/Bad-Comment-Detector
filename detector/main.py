@@ -65,8 +65,9 @@ def main():
     parser.add_argument("-t", dest="text", metavar="Text", nargs='+', type=str, help="Comment to detect", required=False)
     parser.add_argument("--no-ai", dest="ai", action="store_false", required=False, help="Disable AI filter")
     parser.add_argument("-d", "--debug", dest="debug", action="store_true", required=False, help="Debug mode")
-    parser.add_argument("--set-threshold", dest="threshold", nargs=1, type=int, help="Set toxicity threshold from 0-100")
-    parser.add_argument("--set-feedback-file", dest="feedback_file", nargs=1, type=str, help="Set CSV file to put feedback")
+    parser.add_argument("-r", "--result", dest="result", nargs=1, type=str, required=False, help="Expected result with the given comment (e.g. 'toxic' or 'non-toxic')")
+    parser.add_argument("--set-threshold", dest="threshold", nargs=1, type=int, required=False, help="Set toxicity threshold from 0-100")
+    parser.add_argument("--set-feedback-file", dest="feedback_file", nargs=1, type=str, required=False, help="Set CSV file to put feedback")
     
     args = parser.parse_args()
     
@@ -100,6 +101,14 @@ def main():
             print("Result: ", end="")
             print("Toxic" if is_toxic else "Non-toxic")
             print("==========================")
+        
+        if args.result:
+            arr = []
+            result = str(args.result[0]).lower()
+            result = "1" if result == "toxic" or result == "1" else "0"
+            for i in args.text:
+                arr.append([i, result])
+            helper.appendToCSVFile(feedback_data_file, arr)
     else:
         main_test(test_cases, toxic_keywords, nlp, custom_nlp)
     

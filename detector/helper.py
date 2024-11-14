@@ -19,9 +19,21 @@ def readCSVFromFile(file_path):
             lines.append(line)
         return lines
 
-def writeJsonToFile(file_path: str, j):
+def writeJsonToFile(file_path, j):
     if type(j) != json:
         j = json.dumps(j, indent=4)
         
     with open(file_path, 'w') as f:
         f.write(j)
+        
+def appendToCSVFile(file_path, arr: list):
+    if not arr:
+        return
+            
+    with open(file_path, 'a', newline='') as f:
+        writer = csv.writer(f)
+        if type(arr[0]) == list:
+            for i in arr:
+                writer.writerow(i)
+        else:
+            writer.writerow(i)
