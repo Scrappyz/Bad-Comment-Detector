@@ -21,7 +21,7 @@ def aiBasedDetection(tokens, nlp):
     
     return False
 
-def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, ai=True, threshold=60, debug=False):
+def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, threshold, ai=True, debug=False):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
     cleaned_text = preprocess.cleanText(text, keywords, stopwords, nlp)
@@ -97,7 +97,7 @@ def main():
         print("==========================")
         for i in args.text:
             print("Comment:", i)
-            is_toxic = detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, args.ai, config["threshold"], args.debug)
+            is_toxic = detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"], args.ai, args.debug)
             print("Result: ", end="")
             print("Toxic" if is_toxic else "Non-toxic")
             print("==========================")
@@ -113,7 +113,7 @@ def main():
         main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"])
     
 
-def main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, threshold=60):
+def main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, threshold):
     # Main function to run toxicity detection on test cases.
     source_dir = Path(__file__).parent.resolve()
     
@@ -125,7 +125,7 @@ def main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, threshold=
         total += 1
         comment = i["comment"]
         expected_result = i["expected"]
-        is_toxic = detectToxicity(comment, toxic_keywords, stopwords, nlp, custom_nlp, True, threshold, False)
+        is_toxic = detectToxicity(comment, toxic_keywords, stopwords, nlp, custom_nlp, threshold, True, False)
         actual_result = "Toxic" if is_toxic else "Non-Toxic"
         if actual_result == expected_result:
             pass_test_case = True
