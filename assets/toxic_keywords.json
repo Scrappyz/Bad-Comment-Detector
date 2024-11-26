@@ -1,25 +1,29 @@
-[
-    "crap",
-    "fuck",
-    "fck",
-    "fuc",
-    "fuk",
-    "fak",
-    "shit",
-    "ass",
-    "arse",
-    "dick",
-    "dck",
-    "cunt",
-    "cock",
-    "fag",
-    "cum",
-    "bastard",
-    "bitch",
-    "nigga",
-    "nigger",
-    "pussy",
-    "slut",
-    "whore",
-    "buttsex"
-]
+{
+    "crap": {},
+    "fuck": {},
+    "fck": {},
+    "fuc": {},
+    "fuk": {},
+    "fak": {},
+    "shit": {},
+    "ass": {
+        "center": ["assign", "assess"]
+    },
+    "arse": {},
+    "dick": {},
+    "dck": {},
+    "cunt": {},
+    "cock": {},
+    "fag": {},
+    "cum": {
+        "right": ["laude"]
+    },
+    "bastard": {},
+    "bitch": {},
+    "nigga": {},
+    "nigger": {},
+    "pussy": {},
+    "slut": {},
+    "whore": {},
+    "buttsex": {}
+}
