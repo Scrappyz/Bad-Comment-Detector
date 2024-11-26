@@ -49,15 +49,19 @@ def normalizeWildcards(text: str, wildcard_set: set) -> str:
         
     return normalized
   
-def fuzzyMatchReplace(word, word_list, threshold) -> str:
+def fuzzyMatchReplace(word, word_list, threshold, remove_duplicates=False) -> str:
     if not word:
         return ""
     
-    temp = word[0]
-    for i in word:
-        if i == temp[-1]:
-            continue
-        temp += i
+    # Remove duplicate characters in a row (e.g. "hello" -> "helo")
+    if not remove_duplicates:
+        temp = word
+    else:
+        temp = word[0]
+        for i in word:
+            if i == temp[-1]:
+                continue
+            temp += i
         
     for i in word_list:
         if fuzz.ratio(temp, i) >= threshold:
@@ -145,17 +149,17 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     # Replace all extended words (e.g. "niiiiggaa" -> "nigga")
     cleaned = []
     for i in tokens:
-        cleaned.append(fuzzyMatchReplace(str(i), word_set, 80))
+        cleaned.append(fuzzyMatchReplace(str(i), word_set, 80, True))
     
     cleaned = " ".join(cleaned)
     
     # Replace all wildcards to a single wildcard (e.g. "f#dg*" -> "f*dg*")
-    # cleaned = normalizeWildcards(cleaned, wildcards)
+    cleaned = normalizeWildcards(cleaned, wildcards)
     
-    # # Replace all keywords to their proper wording (e.g. "f*dge" -> "fudge")
-    # matches = findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
-    # for k, v in matches.items():
-    #     cleaned = cleaned.replace(k, v)
+    # Replace all keywords to their proper wording (e.g. "f*dge" -> "fudge")
+    matches = findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
+    for k, v in matches.items():
+        cleaned = cleaned.replace(k, v)
     
     return cleaned
 
