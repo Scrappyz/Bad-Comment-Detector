@@ -110,10 +110,10 @@ def main():
                 arr.append([i, result])
             helper.appendToCSVFile(feedback_data_file, arr)
     else:
-        main_test(test_cases, toxic_keywords, nlp, custom_nlp)
+        main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"])
     
 
-def main_test(test_cases, toxic_keywords, nlp, custom_nlp):
+def main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, threshold=60):
     # Main function to run toxicity detection on test cases.
     source_dir = Path(__file__).parent.resolve()
     
@@ -125,7 +125,7 @@ def main_test(test_cases, toxic_keywords, nlp, custom_nlp):
         total += 1
         comment = i["comment"]
         expected_result = i["expected"]
-        is_toxic = detectToxicity(comment, toxic_keywords, nlp, custom_nlp)
+        is_toxic = detectToxicity(comment, toxic_keywords, stopwords, nlp, custom_nlp, True, threshold, False)
         actual_result = "Toxic" if is_toxic else "Non-Toxic"
         if actual_result == expected_result:
             pass_test_case = True
