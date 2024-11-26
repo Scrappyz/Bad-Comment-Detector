@@ -8,19 +8,26 @@ from os import getcwd
 def ruleBasedDetection(tokens, keywords: dict, debug=False):
     # Detect toxicity using rule-based methods.
     keywords_list = list(keywords.keys())
-    for i in tokens:
-        text = str(i)
+    for i in range(len(tokens)):
+        text = str(tokens[i])
         substrings = list(preprocess.findAllSubstrings(text, keywords_list))
         if substrings:
             substr = substrings[0]
+            
+            # Check current token if it has an excluded substring
             if "center" in keywords[substr] and keywords[substr]["center"] and preprocess.isSubstring(text, keywords[substr]["center"]):
                 continue
             
-            if "left" in keywords[substr] and keywords[substr]["left"] and preprocess.isSubstring(text, keywords[substr]["left"]):
+            # Check next token if it has an excluded substring
+            text = "" if i >= len(tokens)-1 else str(tokens[i+1])
+            if text and "right" in keywords[substr] and keywords[substr]["right"] and preprocess.isSubstring(text, keywords[substr]["right"]):
                 continue
             
-            if "right" in keywords[substr] and keywords[substr]["right"] and preprocess.isSubstring(text, keywords[substr]["right"]):
+            # Check previous token if it has an excluded substring
+            text = "" if i <= 0 else str(tokens[i-1])
+            if text and "left" in keywords[substr] and keywords[substr]["left"] and preprocess.isSubstring(text, keywords[substr]["left"]):
                 continue
+            
             return True
     return False
 
@@ -107,7 +114,6 @@ def main():
     stopwords = set(nlp.Defaults.stop_words)
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
     
-    args.text = ["youre ugly"]
     if args.text:
         print("==========================")
         for i in args.text:

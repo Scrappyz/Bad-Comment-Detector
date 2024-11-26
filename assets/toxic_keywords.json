@@ -2,18 +2,23 @@
     "crap": {},
     "fuck": {},
     "fck": {},
-    "fuc": {},
+    "fuc": {
+        "center": ["fucid"]
+    },
     "fuk": {},
     "fak": {},
     "shit": {},
+    "shet": {},
+    "shat": {},
     "ass": {
         "center": ["assign", "assess"]
     },
     "arse": {},
     "dick": {},
-    "dck": {},
     "cunt": {},
-    "cock": {},
+    "cock": {
+        "center": ["fight"]
+    },
     "fag": {},
     "cum": {
         "right": ["laude"]
