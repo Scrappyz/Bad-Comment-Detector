@@ -5,26 +5,39 @@ import helper
 import spacy
 from os import getcwd
 
-def ruleBasedDetection(tokens, keywords: set, debug=False):
-    # Detect toxicity using rule-based regex patterns.
+def ruleBasedDetection(tokens, keywords: dict, debug=False):
+    # Detect toxicity using rule-based methods.
+    keywords_list = list(keywords.keys())
     for i in tokens:
-        if preprocess.isSubstring(str(i), keywords):
+        text = str(i)
+        substrings = list(preprocess.findAllSubstrings(text, keywords_list))
+        if substrings:
+            substr = substrings[0]
+            if "center" in keywords[substr] and keywords[substr]["center"] and preprocess.isSubstring(text, keywords[substr]["center"]):
+                continue
+            
+            if "left" in keywords[substr] and keywords[substr]["left"] and preprocess.isSubstring(text, keywords[substr]["left"]):
+                continue
+            
+            if "right" in keywords[substr] and keywords[substr]["right"] and preprocess.isSubstring(text, keywords[substr]["right"]):
+                continue
             return True
     return False
 
-def aiBasedDetection(tokens, nlp):
+def aiBasedDetection(tokens, nlp, threshold):
     # Detect toxicity using spaCy's AI-based model.
-
+    threshold /= 100
+    
     # Assuming the model's 'cats' attribute gives the category probabilities
-    if 'toxic' in tokens.cats and tokens.cats['toxic'] > 0.6:
+    if 'toxic' in tokens.cats and tokens.cats['toxic'] >= threshold:
         return True  # Toxic based on AI model
     
     return False
 
-def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, threshold, ai=True, debug=False):
+def detectToxicity(text, keywords: dict, stopwords: set, nlp, custom_nlp, threshold, ai=True, debug=False):
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
-    cleaned_text = preprocess.cleanText(text, keywords, stopwords, nlp)
+    cleaned_text = preprocess.cleanText(text, set(keywords.keys()), stopwords, nlp)
     
     if debug:
         print("Cleaned:", cleaned_text)
@@ -40,13 +53,14 @@ def detectToxicity(text, keywords: set, stopwords: set, nlp, custom_nlp, thresho
     # Step 3: AI-based detection
     if ai:
         tokens = custom_nlp(cleaned_text)
-        toxic = aiBasedDetection(tokens, custom_nlp)
+        is_toxic = aiBasedDetection(tokens, custom_nlp, threshold)
         if debug:
             print("Detection: AI")
             print("Categories:", tokens.cats)
-        return toxic
+        return is_toxic
 
-    print("Detection: None")
+    if debug:
+        print("Detection: None")
     return False
 
 def main():
@@ -89,10 +103,11 @@ def main():
         nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
         custom_nlp = None
         
-    toxic_keywords = set(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
+    toxic_keywords = dict(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
     stopwords = set(nlp.Defaults.stop_words)
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
-        
+    
+    args.text = ["youre ugly"]
     if args.text:
         print("==========================")
         for i in args.text:
