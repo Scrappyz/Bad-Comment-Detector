@@ -41,7 +41,7 @@ def aiBasedDetection(tokens, nlp, threshold):
     
     return False
 
-def detectToxicity(text, keywords: dict, stopwords: set, nlp, custom_nlp, threshold, ai=True, debug=False) -> dict:
+def detectToxicity(text, keywords: dict, stopwords: set, nlp, custom_nlp, threshold, rulebased=True, ai=True, debug=False) -> dict:
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
     output = {}
@@ -54,10 +54,14 @@ def detectToxicity(text, keywords: dict, stopwords: set, nlp, custom_nlp, thresh
     tokens = nlp(cleaned_text)
     
     # Step 2: Rule-based detection
-    if ruleBasedDetection(tokens, keywords):
+    if rulebased and ruleBasedDetection(tokens, keywords):
         if debug:
             output["detection"] = "rule-based"
         output["result"] = "toxic"
+        return output
+    
+    if not ai:
+        output["result"] = "non-toxic"
         return output
     
     # Step 3: AI-based detection
@@ -88,6 +92,7 @@ def main():
     
     parser = argparse.ArgumentParser("Bad Comment Detector")
     parser.add_argument("-t", dest="text", metavar="Text", nargs='+', type=str, help="Comment to detect", required=False)
+    parser.add_argument("--no-rule", dest="rule", action="store_false", required=False, help="Disable Rule-based filter")
     parser.add_argument("--no-ai", dest="ai", action="store_false", required=False, help="Disable AI filter")
     parser.add_argument("-d", "--debug", dest="debug", action="store_true", required=False, help="Debug mode")
     parser.add_argument("-r", "--result", dest="result", nargs=1, type=str, required=False, help="Expected result with the given comment (e.g. 'toxic' or 'non-toxic')")
@@ -121,7 +126,7 @@ def main():
     outputs = []
     if args.text:
         for i in args.text:
-            outputs.append(detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"], args.ai, args.debug))
+            outputs.append(detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"], args.rule, args.ai, args.debug))
         
         if args.result:
             arr = []
@@ -152,7 +157,7 @@ def main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, threshold)
         total += 1
         comment = i["comment"]
         expected_result = i["expected"]
-        is_toxic = detectToxicity(comment, toxic_keywords, stopwords, nlp, custom_nlp, threshold, True, False)
+        is_toxic = detectToxicity(comment, toxic_keywords, stopwords, nlp, custom_nlp, threshold, True, True, False)
         actual_result = "Toxic" if is_toxic else "Non-Toxic"
         if actual_result == expected_result:
             pass_test_case = True
