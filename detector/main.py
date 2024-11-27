@@ -41,34 +41,38 @@ def aiBasedDetection(tokens, nlp, threshold):
     
     return False
 
-def detectToxicity(text, keywords: dict, stopwords: set, nlp, custom_nlp, threshold, ai=True, debug=False):
+def detectToxicity(text, keywords: dict, stopwords: set, nlp, custom_nlp, threshold, ai=True, debug=False) -> dict:
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
+    output = {}
     cleaned_text = preprocess.cleanText(text, set(keywords.keys()), stopwords, nlp)
+    output["comment"] = text
     
     if debug:
-        print("Cleaned:", cleaned_text)
+        output["cleaned"] = cleaned_text
         
     tokens = nlp(cleaned_text)
     
     # Step 2: Rule-based detection
     if ruleBasedDetection(tokens, keywords):
         if debug:
-            print("Detection: Rule-based")
-        return True  # Mark as toxic if rule-based approach detects it
+            output["detection"] = "rule-based"
+        output["result"] = "toxic"
+        return output
     
     # Step 3: AI-based detection
     if ai:
         tokens = custom_nlp(cleaned_text)
         is_toxic = aiBasedDetection(tokens, custom_nlp, threshold)
         if debug:
-            print("Detection: AI")
-            print("Categories:", tokens.cats)
-        return is_toxic
+            output["detection"] = "ai"
+            output["categories"] = dict(tokens.cats)
+        output["result"] = "toxic" if is_toxic else "non-toxic"
+        return output
 
     if debug:
-        print("Detection: None")
-    return False
+        output["detection"] = ""
+    return output
 
 def main():
     source_dir = Path(__file__).parent.resolve()
@@ -114,14 +118,10 @@ def main():
     stopwords = set(nlp.Defaults.stop_words)
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
     
+    outputs = []
     if args.text:
-        print("==========================")
         for i in args.text:
-            print("Comment:", i)
-            is_toxic = detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"], args.ai, args.debug)
-            print("Result: ", end="")
-            print("Toxic" if is_toxic else "Non-toxic")
-            print("==========================")
+            outputs.append(detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"], args.ai, args.debug))
         
         if args.result:
             arr = []
@@ -130,6 +130,12 @@ def main():
             for i in args.text:
                 arr.append([i, result])
             helper.appendToCSVFile(feedback_data_file, arr)
+        
+        print("=============================")
+        for i in range(len(outputs)):
+            for k, v in outputs[i].items():
+                print(k.title() + ":", v if k == "comment" or k == "cleaned" or k == "categories" else v.title())
+            print("=============================")
     else:
         main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"])
     
