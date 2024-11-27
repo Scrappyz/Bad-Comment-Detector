@@ -37,3 +37,17 @@ def appendToCSVFile(file_path, arr: list):
                 writer.writerow(i)
         else:
             writer.writerow(i)
+            
+def writeToCSVFile(file_path, arr, fieldnames=[]):
+    if not arr:
+        return
+    
+    if type(arr[0]) == dict:
+        with open(file_path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(arr)
+    else:
+        with open(file_path, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(arr)
