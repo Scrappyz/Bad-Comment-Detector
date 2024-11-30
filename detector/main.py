@@ -173,14 +173,13 @@ def main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, threshold)
         total += 1
         comment = i["comment"]
         expected_result = i["expected"]
-        is_toxic = detectToxicity(comment, toxic_keywords, stopwords, nlp, custom_nlp, threshold, True, True, False)
-        actual_result = "Toxic" if is_toxic else "Non-Toxic"
-        if actual_result == expected_result:
+        output = detectToxicity(comment, toxic_keywords, stopwords, nlp, custom_nlp, threshold, True, True, False)
+        if output["result"] == expected_result.lower():
             pass_test_case = True
             score += 1
         else:
             pass_test_case = False
-        print("[{3}] Result: {0}, Expected: {1}, Comment: {2}".format(actual_result, expected_result, comment, pass_test_case))
+        print("[{3}] Result: {0}, Expected: {1}, Comment: {2}".format(output["result"].title(), expected_result, comment, pass_test_case))
     
     print("Score: " + str(score) + "/" + str(total))
     
