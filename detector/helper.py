@@ -51,3 +51,7 @@ def writeToCSVFile(file_path, arr, fieldnames=[]):
         with open(file_path, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerows(arr)
+            
+def readCommentsFromFile(file_path) -> list:
+    with open(file_path, "r") as f:
+        return f.read().splitlines()

@@ -79,6 +79,7 @@ def detectToxicity(text, keywords: dict, stopwords: set, nlp, custom_nlp, thresh
     return output
 
 def main():
+    current_dir = Path(getcwd())
     source_dir = Path(__file__).parent.resolve()
     asset_dir = source_dir.parent.joinpath("assets")
     config_file = Path(__file__).parent.joinpath("config.json").resolve()
@@ -91,11 +92,12 @@ def main():
         feedback_data_file = Path(source_dir).joinpath(feedback_data_file).resolve()
     
     parser = argparse.ArgumentParser("Bad Comment Detector")
-    parser.add_argument("-t", dest="text", metavar="Text", nargs='+', type=str, help="Comment to detect", required=False)
+    parser.add_argument("-t", dest="text", metavar="Text", nargs='+', required=False, type=str, help="Comment to detect")
     parser.add_argument("--no-rule", dest="rule", action="store_false", required=False, help="Disable Rule-based filter")
     parser.add_argument("--no-ai", dest="ai", action="store_false", required=False, help="Disable AI filter")
     parser.add_argument("-d", "--debug", dest="debug", action="store_true", required=False, help="Debug mode")
     parser.add_argument("-r", "--result", dest="result", nargs=1, type=str, required=False, help="Expected result with the given comment (e.g. 'toxic' or 'non-toxic')")
+    parser.add_argument("-f", "--file", dest="file", nargs='+', type=str, required=False, help="File input. (e.g. `comments.txt`)")
     parser.add_argument("-o", "--output", dest="output", nargs=1, type=str, required=False, help="Output to file. (e.g. 'output.json`)")
     parser.add_argument("--set-threshold", dest="threshold", nargs=1, type=int, required=False, help="Set toxicity threshold from 0-100")
     parser.add_argument("--set-feedback-file", dest="feedback_file", nargs=1, type=str, required=False, help="Set CSV file to put feedback")
@@ -124,16 +126,24 @@ def main():
     stopwords = set(nlp.Defaults.stop_words)
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
     
+    inputs = []
+    
+    if args.file:
+        for i in args.file:
+            inputs += helper.readCommentsFromFile(current_dir.joinpath(i).resolve())
+    elif args.text:
+        inputs = args.text
+        
     outputs = []
-    if args.text:
-        for i in args.text:
+    if inputs:
+        for i in inputs:
             outputs.append(detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"], args.rule, args.ai, args.debug))
         
         if args.result:
             arr = []
             result = str(args.result[0]).lower()
             result = "1" if result == "toxic" or result == "1" else "0"
-            for i in args.text:
+            for i in inputs:
                 arr.append([i, result])
             helper.appendToCSVFile(feedback_data_file, arr)
         
@@ -144,7 +154,6 @@ def main():
             print("=============================")
             
         if args.output:
-            current_dir = Path(getcwd())
             output_path = current_dir.joinpath(args.output[0]).resolve()
             file_extension = output_path.suffix
             
