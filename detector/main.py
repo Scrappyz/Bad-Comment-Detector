@@ -182,6 +182,16 @@ def main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, threshold)
         print("[{3}] Result: {0}, Expected: {1}, Comment: {2}".format(output["result"].title(), expected_result, comment, pass_test_case))
     
     print("Score: " + str(score) + "/" + str(total))
-    
+
+def getOutput(str):
+    current_dir = Path(getcwd())
+    source_dir = Path(__file__).parent.resolve()
+    asset_dir = source_dir.parent.joinpath("assets")
+    toxic_keywords = dict(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
+    nlp = spacy.load("en_core_web_md")
+    custom_nlp = spacy.load(source_dir.parent.joinpath("output/model-last").resolve())
+    stopwords = set(nlp.Defaults.stop_words)
+    stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
+    return detectToxicity(str, toxic_keywords, stopwords, nlp, custom_nlp, 75, True, True, True)['result']
 if __name__ == "__main__":
     main()
