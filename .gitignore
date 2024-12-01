@@ -10,6 +10,8 @@ detector/__pycache__
 !assets/**
 !config
 !config/**
+!frontend-react
+!frontend-react/**
 !scripts
 !scripts/**
 !input
