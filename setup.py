@@ -12,7 +12,8 @@ setup(
         'pyahocorasick>=2.1.0',
         'contractions>=0.1.73',
         'spacy>=3.7.6',
-        'thefuzz>=0.22.0'
+        'thefuzz>=0.22.0',
+        'fastapi>=0.115.5'
         # Add more dependencies as required
     ],
     packages=find_packages(include=['detector'])
