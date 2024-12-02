@@ -194,13 +194,13 @@ def getOutput(str):
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
     return detectToxicity(str, toxic_keywords, stopwords, nlp, custom_nlp, 75, True, True, True)['result']
 
-def getOutputWithSpacyObject(str, nlp, custom_nlp):
+def getOutputWithSpacyObject(str, nlp, custom_nlp, threshold):
     source_dir = Path(__file__).parent.resolve()
     asset_dir = source_dir.parent.joinpath("assets")
     toxic_keywords = dict(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
     stopwords = set(nlp.Defaults.stop_words)
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
-    return detectToxicity(str, toxic_keywords, stopwords, nlp, custom_nlp, 75, True, True, True)
+    return detectToxicity(str, toxic_keywords, stopwords, nlp, custom_nlp, threshold, True, True, True)
 
 if __name__ == "__main__":
     main()

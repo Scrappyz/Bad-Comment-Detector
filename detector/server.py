@@ -30,4 +30,4 @@ def on_startup():
 
 @app.post("/api")
 def getCategory(textObject: InputText):
-  return getOutputWithSpacyObject(textObject.text, nlp, custom_nlp)
+  return getOutputWithSpacyObject(textObject.text, nlp, custom_nlp, 60)
