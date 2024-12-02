@@ -24,9 +24,22 @@ body {
 }
 
 .result {
-  background-color: green;
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 36px;
+}
+
+.input {
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.inputBar {
+  border-radius: 5px;
+  border-color: gray;
+  border-width: 1px;
+  height: 25px;
 }
