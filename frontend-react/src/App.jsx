@@ -22,10 +22,15 @@ function App() {
 
   return (
     <div className='frame'>
-      <div>
-        <input type='text' id='txt1' onKeyDown={tryGetCategoryKeyDown}/>
-        <input type="button" id='btn1' value='Test' onClick={tryGetCategory} />
-        <div id='result'> Result will appear here </div>
+      <div className='form'>
+        <div>
+          <input type='text' id='txt1' onKeyDown={tryGetCategoryKeyDown}/>
+          <input type="button" id='btn1' value='Test' onClick={tryGetCategory} />
+          <div id='result'> Result will appear here </div>
+        </div>
+        <div className='result'>
+          test
+        </div>
       </div>
     </div>
   )
