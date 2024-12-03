@@ -32,7 +32,14 @@ body {
   font-size: 20px;
 }
 
-.input {
+.inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.inputs > .input {
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
@@ -42,14 +49,14 @@ body {
   margin-bottom: 20%;
 }
 
-.input > .bar {
+.inputs > .input > .bar {
   border-radius: 5px 0 0 5px;
   border-color: gray;
   border-width: 1px;
   height: 25px;
 }
 
-.input > .button {
+.inputs > .input > .button {
   height: 29px;
   border-width: 0;
   border-radius: 0 5px 5px 0;

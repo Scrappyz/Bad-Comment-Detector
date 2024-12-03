@@ -39,11 +39,13 @@ function App() {
         <div className='header'>
           Bad Comment Detector
         </div>
-        <div className='input'>
-          <input className='bar' placeholder='Enter your comment here' type='text' id='txt1' onKeyDown={tryGetCategoryKeyDown}/>
-          <input className='button' type="button" id='btn1' value='Test' onClick={tryGetCategory} />
+        <div className='inputs'>
+          <div className='input'>
+            <input className='bar' placeholder='Enter your comment here' type='text' id='txt1' onKeyDown={tryGetCategoryKeyDown}/>
+            <input className='button' type="button" id='btn1' value='Test' onClick={tryGetCategory} />
+          </div>
+          <Result text={result} textColor={resultColor} />
         </div>
-        <Result text={result} textColor={resultColor} />
       </div>
     </div>
   )
