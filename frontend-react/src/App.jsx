@@ -6,7 +6,7 @@ import Result from "./components/Result.jsx";
 
 function App() {
   function getOutputUsingPostRequest() {
-    axios.post('https://bcd-ffek.onrender.com/api', {
+    axios.post('https://bad-comment-detector-server.onrender.com/api', {
       'text': document.getElementById('txt1').value
     }).then(function (response){
       // console.log(response);
