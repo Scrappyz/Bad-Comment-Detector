@@ -33,6 +33,10 @@ def on_startup():
   # print(f"Current memory usage is {current / 10**6}MB; Peak was {peak / 10**6}MB")
   # tracemalloc.stop()
 
+@app.get("/")
+def getRoot():
+  return { "status": "success" }
+
 @app.post("/api")
 def getCategory(textObject: InputText):
   return getOutputWithSpacyObject(textObject.text, custom_nlp, 60)
