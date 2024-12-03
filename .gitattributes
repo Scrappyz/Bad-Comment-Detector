@@ -1,2 +1,2 @@
-*.csv filter=lfs diff=lfs merge=lfs -text
-data/** filter=lfs diff=lfs merge=lfs -text
+assets/training/kaggle_train_data.csv filter=lfs diff=lfs merge=lfs -text
+data/train.spacy filter=lfs diff=lfs merge=lfs -text
