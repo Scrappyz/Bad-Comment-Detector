@@ -36,22 +36,22 @@ def aiBasedDetection(tokens, nlp, threshold):
     threshold /= 100
     
     # Assuming the model's 'cats' attribute gives the category probabilities
-    if 'toxic' in tokens.cats and tokens.cats['toxic'] >= threshold:
+    if 'toxic' in tokens.cats and tokens.cats['toxic'] >= threshold or tokens.cats['toxic'] > tokens.cats['non-toxic']:
         return True  # Toxic based on AI model
     
     return False
 
-def detectToxicity(text, keywords: dict, stopwords: set, nlp, custom_nlp, threshold, rulebased=True, ai=True, debug=False) -> dict:
+def detectToxicity(text, keywords: dict, stopwords: set, custom_nlp, threshold, rulebased=True, ai=True, debug=False) -> dict:
     # Hybrid approach combining rule-based and AI-based toxicity detection.
     # Step 1: Clean the text
     output = {}
-    cleaned_text = preprocess.cleanText(text, set(keywords.keys()), stopwords, nlp)
+    cleaned_text = preprocess.cleanText(text, set(keywords.keys()), stopwords, custom_nlp)
     output["comment"] = text
     
     if debug:
         output["cleaned"] = cleaned_text
         
-    tokens = nlp(cleaned_text)
+    tokens = custom_nlp(cleaned_text)
     
     # Step 2: Rule-based detection
     if rulebased and ruleBasedDetection(tokens, keywords):
@@ -194,13 +194,13 @@ def getOutput(str):
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
     return detectToxicity(str, toxic_keywords, stopwords, nlp, custom_nlp, 75, True, True, True)['result']
 
-def getOutputWithSpacyObject(str, nlp, custom_nlp, threshold):
+def getOutputWithSpacyObject(str, custom_nlp, threshold):
     source_dir = Path(__file__).parent.resolve()
     asset_dir = source_dir.parent.joinpath("assets")
     toxic_keywords = dict(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
-    stopwords = set(nlp.Defaults.stop_words)
+    stopwords = set(custom_nlp.Defaults.stop_words)
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
-    return detectToxicity(str, toxic_keywords, stopwords, nlp, custom_nlp, threshold, True, True, True)
+    return detectToxicity(str, toxic_keywords, stopwords, custom_nlp, threshold, True, True, True)
 
 if __name__ == "__main__":
     main()
