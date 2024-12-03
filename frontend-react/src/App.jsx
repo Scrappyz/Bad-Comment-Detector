@@ -1,10 +1,21 @@
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import axios from 'axios';
 import "./App.css";
 import Result from "./components/Result.jsx";
 
 function App() {
+  function heartBeat() {
+    axios.get("https://bad-comment-detector-server.onrender.com/").then(function() {
+      // alert("Connected!");
+      document.getElementById('isConnected').innerText = "Connected!";
+    }).catch(function() {
+      document.getElementById('isConnected').innerText = "Disconnected";
+    });
+  }
+  useEffect(function(){
+    setInterval(heartBeat, 5000);
+  }, []);
   function getOutputUsingPostRequest() {
     axios.post('https://bad-comment-detector-server.onrender.com/api', {
       'text': document.getElementById('txt1').value
@@ -50,6 +61,9 @@ function App() {
               Expected
             </div>
             <button className='btn'>Result</button>
+          </div>
+          <div id='isConnected'>
+            Connecting
           </div>
         </div>
       </div>
