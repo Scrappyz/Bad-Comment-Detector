@@ -6,7 +6,7 @@ import Result from "./components/Result.jsx";
 
 function App() {
   function getOutputUsingPostRequest() {
-    axios.post('http://127.0.0.1:8000/api', {
+    axios.post('https://bcd-ffek.onrender.com/api', {
       'text': document.getElementById('txt1').value
     }).then(function (response){
       // console.log(response);
