@@ -16,30 +16,46 @@ body {
   box-shadow: 0px 4px 10px rgb(27, 27, 27);
   width: 300px;
   height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 50px;
 }
 
-.result {
+.form > .header {
+  border-radius: 9px 9px 0 0;
+  height: 40px;
+  width: 100%;
+  background-color: purple;
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  font-size: 36px;
+  font-weight: bolder;
+  font-size: 20px;
 }
 
 .input {
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20%;
+  margin-bottom: 20%;
 }
 
-.inputBar {
-  border-radius: 5px;
+.input > .bar {
+  border-radius: 5px 0 0 5px;
   border-color: gray;
   border-width: 1px;
   height: 25px;
+}
+
+.input > .button {
+  height: 29px;
+  border-width: 0;
+  border-radius: 0 5px 5px 0;
+  background-color: purple;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: lighter;
+  font-size: 14px;
 }

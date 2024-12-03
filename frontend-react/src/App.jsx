@@ -36,9 +36,12 @@ function App() {
   return (
     <div className='frame'>
       <div className='form'>
+        <div className='header'>
+          Bad Comment Detector
+        </div>
         <div className='input'>
-          <input className='inputBar' placeholder='Enter your comment here' type='text' id='txt1' onKeyDown={tryGetCategoryKeyDown}/>
-          <input type="button" id='btn1' value='Test' onClick={tryGetCategory} />
+          <input className='bar' placeholder='Enter your comment here' type='text' id='txt1' onKeyDown={tryGetCategoryKeyDown}/>
+          <input className='button' type="button" id='btn1' value='Test' onClick={tryGetCategory} />
         </div>
         <Result text={result} textColor={resultColor} />
       </div>
