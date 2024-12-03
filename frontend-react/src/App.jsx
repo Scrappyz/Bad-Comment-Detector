@@ -42,9 +42,15 @@ function App() {
         <div className='inputs'>
           <div className='input'>
             <input className='bar' placeholder='Enter your comment here' type='text' id='txt1' onKeyDown={tryGetCategoryKeyDown}/>
-            <input className='button' type="button" id='btn1' value='Test' onClick={tryGetCategory} />
+            <input className='btn' type="button" id='btn1' value='Test' onClick={tryGetCategory} />
           </div>
           <Result text={result} textColor={resultColor} />
+          <div className='feedback'>
+            <div className='label'>
+              Expected
+            </div>
+            <button className='btn'>Result</button>
+          </div>
         </div>
       </div>
     </div>
