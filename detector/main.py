@@ -115,15 +115,13 @@ def main():
         return
     
     if args.ai:
-        nlp = spacy.load("en_core_web_md")
         custom_nlp = spacy.load(source_dir.parent.joinpath("output/model-last").resolve())
         # print("With AI")
     else:
-        nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
-        custom_nlp = None
+        custom_nlp = spacy.load(source_dir.parent.joinpath("output/model-last").resolve())
         
     toxic_keywords = dict(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
-    stopwords = set(nlp.Defaults.stop_words)
+    stopwords = set(custom_nlp.Defaults.stop_words)
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
     
     inputs = []
@@ -137,7 +135,7 @@ def main():
     outputs = []
     if inputs:
         for i in inputs:
-            outputs.append(detectToxicity(i, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"], args.rule, args.ai, args.debug))
+            outputs.append(detectToxicity(i, toxic_keywords, stopwords, custom_nlp, config["threshold"], args.rule, args.ai, args.debug))
         
         if args.result:
             arr = []
@@ -159,9 +157,9 @@ def main():
             
             helper.writeJsonToFile(output_path, outputs)
     else:
-        main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, config["threshold"])
+        main_test(test_cases, toxic_keywords, stopwords, custom_nlp, config["threshold"])
     
-def main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, threshold):
+def main_test(test_cases, toxic_keywords, stopwords, custom_nlp, threshold):
     # Main function to run toxicity detection on test cases.
     source_dir = Path(__file__).parent.resolve()
     
@@ -173,7 +171,7 @@ def main_test(test_cases, toxic_keywords, stopwords, nlp, custom_nlp, threshold)
         total += 1
         comment = i["comment"]
         expected_result = i["expected"]
-        output = detectToxicity(comment, toxic_keywords, stopwords, nlp, custom_nlp, threshold, True, True, False)
+        output = detectToxicity(comment, toxic_keywords, stopwords, custom_nlp, threshold, True, True, False)
         if output["result"] == expected_result.lower():
             pass_test_case = True
             score += 1
@@ -188,11 +186,10 @@ def getOutput(str):
     source_dir = Path(__file__).parent.resolve()
     asset_dir = source_dir.parent.joinpath("assets")
     toxic_keywords = dict(helper.readJsonFromFile(asset_dir.joinpath("toxic_keywords.json")))
-    nlp = spacy.load("en_core_web_md")
     custom_nlp = spacy.load(source_dir.parent.joinpath("output/model-last").resolve())
-    stopwords = set(nlp.Defaults.stop_words)
+    stopwords = set(custom_nlp.Defaults.stop_words)
     stopwords -= set(helper.readJsonFromFile(Path(__file__).parent.parent.joinpath("assets/exclude_stopwords.json").resolve()))
-    return detectToxicity(str, toxic_keywords, stopwords, nlp, custom_nlp, 75, True, True, True)['result']
+    return detectToxicity(str, toxic_keywords, stopwords, custom_nlp, 75, True, True, True)['result']
 
 def getOutputWithSpacyObject(str, custom_nlp, threshold):
     source_dir = Path(__file__).parent.resolve()
