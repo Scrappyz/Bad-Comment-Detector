@@ -15,8 +15,29 @@ function App() {
   }
   useEffect(function(){
     setInterval(heartBeat, 5000);
+    if (localStorage.getItem("limit") === null) {
+      localStorage.setItem("limit", "100");
+      let nextTime = (new Date()).getTime();
+      nextTime = nextTime + 60 * 60 * 1000;
+      localStorage.setItem("nextTime", nextTime.toString());
+    }
   }, []);
   function getOutputUsingPostRequest() {
+    var limit = parseInt(localStorage.getItem("limit"));
+    var nextTime = parseInt(localStorage.getItem("nextTime"));
+    var currentTime = (new Date()).getTime();
+    if (limit < 1 && currentTime < nextTime) {
+      alert("Limit exceeded");
+      return ;
+    }
+    if (currentTime >= nextTime) {
+      limit = 5;
+      localStorage.setItem("limit", "100");
+      nextTime = (new Date()).getTime();
+      nextTime = nextTime + 60 * 60 * 1000;
+      localStorage.setItem("nextTime", nextTime.toString());
+    }
+
     axios.post('https://bad-comment-detector-server.onrender.com/api', {
       'text': document.getElementById('txt1').value
     }).then(function (response){
@@ -31,6 +52,10 @@ function App() {
         setResultColor("green");
       }
     });
+
+    limit = limit - 1;
+    localStorage.setItem("limit", limit.toString());
+
   }
   function tryGetCategory() {
     getOutputUsingPostRequest();
