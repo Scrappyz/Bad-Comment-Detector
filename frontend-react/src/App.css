@@ -32,7 +32,7 @@ body {
   font-size: 20px;
 }
 
-.inputs {
+.content {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,40 +40,14 @@ body {
   gap: 30px;
 }
 
-.inputs > .input {
-  font-size: 16px;
-  font-family: Arial, Helvetica, sans-serif;
+.content > .status-group {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20%;
+  margin-top: 20px;
 }
 
-.inputs > .input > .bar {
-  border-radius: 5px 0 0 5px;
-  border-color: gray;
-  border-width: 1px;
-  height: 25px;
-}
-
-.inputs > .input > .btn {
-  height: 29px;
-  border-width: 0;
-  border-radius: 0 5px 5px 0;
-  background-color: purple;
-  color: white;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: lighter;
-  font-size: 14px;
-}
-
-.feedback {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.feedback > .label {
+.status-group > .label-box {
   height: 100%;
   width: 100%;
   padding: 3px;
@@ -87,6 +61,58 @@ body {
   font-size: 14px;
 }
 
-.feedback > .btn {
+.status-group > .status {
+  height: 19px;
+  padding: 2px;
+  border-radius: 0 5px 5px 0;
+}
+
+.input-group {
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-group > .input {
+  border-radius: 5px 0 0 5px;
+  border-color: gray;
+  border-width: 1px;
+  height: 25px;
+}
+
+.input-group > .btn {
+  height: 29px;
+  border-width: 0;
+  border-radius: 0 5px 5px 0;
+  background-color: purple;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: lighter;
+  font-size: 14px;
+}
+
+.feedback-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.feedback-group > .label-box {
+  height: 100%;
+  width: 100%;
+  padding: 3px;
+  border-radius: 5px 0 0 5px;
+  background-color: purple;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.feedback-group > .btn {
   height: 23px;
 }
