@@ -156,6 +156,8 @@ def main():
             
             helper.writeJsonToFile(output_path, outputs)
     else:
+        print("Press `Ctrl + C` to end program")
+        print("=============================")
         while True:
             text = input("Comment: ")
             output = detectToxicity(text, toxic_keywords, stopwords, custom_nlp, config["threshold"], args.rule, args.ai, args.debug)
@@ -207,4 +209,7 @@ def getOutputWithSpacyObject(str, custom_nlp, threshold):
     return detectToxicity(str, toxic_keywords, stopwords, custom_nlp, threshold, True, True, True)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n[Exit]")
