@@ -10,3 +10,4 @@ assets/training/labeled_data.csv
 assets/training/youtoxic_english_1000.csv
 
 detector/test.py
+.vscode/**
