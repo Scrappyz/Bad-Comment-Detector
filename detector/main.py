@@ -36,7 +36,7 @@ def aiBasedDetection(tokens, nlp, threshold):
     threshold /= 100
     
     # Assuming the model's 'cats' attribute gives the category probabilities
-    if 'toxic' in tokens.cats and tokens.cats['toxic'] >= threshold or tokens.cats['toxic'] > tokens.cats['non-toxic']:
+    if 'toxic' in tokens.cats and tokens.cats['toxic'] >= threshold:
         return True  # Toxic based on AI model
     
     return False
