@@ -83,7 +83,7 @@ body {
 }
 
 .input-group > .btn {
-  height: 29px;
+  height: 28px;
   border-width: 0;
   border-radius: 0 5px 5px 0;
   background-color: purple;
@@ -97,9 +97,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 50px;
 }
 
-.feedback-group > .label-box {
+.expected-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.expected-group > .label-box {
   height: 100%;
   width: 100%;
   padding: 3px;
@@ -113,6 +121,50 @@ body {
   font-size: 14px;
 }
 
-.feedback-group > .btn {
+.expected-group > .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.expected-group > .dropdown > .btn {
   height: 23px;
+  width: 50px;
+}
+
+.feedback-group > .send-btn {
+  height: 100%;
+  width: 100%;
+  padding: 3px;
+  border-radius: 5px 5px 5px 5px;
+  background-color: purple;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  border-width: 0;
+}
+
+.dropdown-items {
+  position: absolute;
+  background-color: rgb(207, 243, 255);
+  box-shadow: 0 4px 5px rgb(32, 32, 32);
+  width: 100%;
+}
+
+.dropdown-items > .items {
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  border-width: 0;
+}
+
+.dropdown-items > .items:hover {
+  background-color: rgb(197, 197, 197);
 }
