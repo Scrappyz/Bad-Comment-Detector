@@ -116,7 +116,6 @@ def main():
     
     if args.ai:
         custom_nlp = spacy.load(source_dir.parent.joinpath("output/model-last").resolve())
-        # print("With AI")
     else:
         custom_nlp = spacy.load(source_dir.parent.joinpath("output/model-last").resolve())
         
@@ -157,7 +156,15 @@ def main():
             
             helper.writeJsonToFile(output_path, outputs)
     else:
-        main_test(test_cases, toxic_keywords, stopwords, custom_nlp, config["threshold"])
+        while True:
+            text = input("Comment: ")
+            output = detectToxicity(text, toxic_keywords, stopwords, custom_nlp, config["threshold"], args.rule, args.ai, args.debug)
+            for k, v in output.items():
+                if k == "comment":
+                    continue
+                print(k.title() + ":", v if k == "cleaned" or k == "categories" else v.title())
+            print("=============================")
+        # main_test(test_cases, toxic_keywords, stopwords, custom_nlp, config["threshold"])
     
 def main_test(test_cases, toxic_keywords, stopwords, custom_nlp, threshold):
     # Main function to run toxicity detection on test cases.
