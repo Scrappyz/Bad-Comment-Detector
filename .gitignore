@@ -8,3 +8,5 @@ __pycache__
 assets/training/kaggle_train_data.csv
 assets/training/labeled_data.csv
 assets/training/youtoxic_english_1000.csv
+
+detector/test.py

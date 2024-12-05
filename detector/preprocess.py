@@ -38,14 +38,21 @@ def isSubstring(s, word_list, min=1):
   # print(words)
   return len(words) >= min
 
-def normalizeWildcards(text: str, wildcard_set: set) -> str:
+def normalizeWildcards(text: str, wildcard: str, wildcard_set: set, end_excludes={'.', ',', '!'}) -> str:
+    if type(wildcard_set) == str:
+        wildcard_set = set(wildcard_set)
+        
     normalized = ""
-    for i in text:
-        if i in wildcard_set:
-            normalized += '*'
+    for i in range(len(text)):
+        ch = text[i]
+        if ch in wildcard_set:
+            if text[i] in end_excludes and (i >= len(text)-1 or text[i+1] == ' '):
+                normalized += ch
+                continue
+            normalized += wildcard
             continue
             
-        normalized += i
+        normalized += ch
         
     return normalized
   
@@ -107,16 +114,6 @@ def findMatchingSubstringsWithWildcardsAndReplacement(text, word_list, wildcards
     return dict(reversed(list(substrings.items())))
   
 def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
-    # Mapping for leetspeak to regular characters
-    leet_map = {
-        '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't',
-        '@': 'a', '$': 's', '(': 'c'
-    }
-
-    wildcards = {
-        '*', '#'
-    }
-    
     # Remove newlines
     text = re.sub(r'[\r\n]+', '', text)
     
@@ -130,20 +127,14 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     printable_chars = set(string.printable)
     text = "".join(filter(lambda x: x in printable_chars, text))
     
+    # Remove non-alphabet words (e.g. "$100" or "2024")
+    text = " ".join([word for word in text.split() if re.search(r'[a-zA-Z]', word)])
+    
     # Expand contractions (e.g. "you're" -> "you are")
     text = contractions.fix(text)
     
-    # Replace obfuscated characters (e.g. "$h1t" -> "shit")
-    cleaned = ""
-    for i in text.lower():
-        if i in leet_map:
-            cleaned += leet_map[i]
-            continue
-        
-        cleaned += i
-    
     # Remove all stopwords
-    tokens = tokenizer(cleaned)
+    tokens = tokenizer(text)
     tokens = [i.text for i in tokens if i.text not in stopword_set]
     
     # Replace all extended words (e.g. "niiiiggaa" -> "nigga")
@@ -154,7 +145,8 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     cleaned = " ".join(cleaned)
     
     # Replace all wildcards to a single wildcard (e.g. "f#dg*" -> "f*dg*")
-    cleaned = normalizeWildcards(cleaned, wildcards)
+    cleaned = re.sub(r"[^a-zA-Z.,!\s]", "*", cleaned)
+    cleaned = normalizeWildcards(cleaned, "*", set(".,!"), set(".,!"))
     
     # Replace all keywords to their proper wording (e.g. "f*dge" -> "fudge")
     matches = findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
