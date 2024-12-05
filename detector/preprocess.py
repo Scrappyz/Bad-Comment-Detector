@@ -133,6 +133,15 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     # Expand contractions (e.g. "you're" -> "you are")
     text = contractions.fix(text)
     
+    # Replace all wildcards to a single wildcard (e.g. "f#dg*" -> "f*dg*")
+    text = re.sub(r"[^a-zA-Z.,!\s]", "*", text)
+    text = normalizeWildcards(text, "*", set(".,!"), set(".,!"))
+    
+    # Replace all keywords to their proper wording (e.g. "f*dge" -> "fudge")
+    matches = findMatchingSubstringsWithWildcardsAndReplacement(text, word_set, "*")
+    for k, v in matches.items():
+        text = text.replace(k, v)
+    
     # Remove all stopwords
     tokens = tokenizer(text)
     tokens = [i.text for i in tokens if i.text not in stopword_set]
@@ -143,15 +152,6 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
         cleaned.append(fuzzyMatchReplace(str(i), word_set, 88, True))
     
     cleaned = " ".join(cleaned)
-    
-    # Replace all wildcards to a single wildcard (e.g. "f#dg*" -> "f*dg*")
-    cleaned = re.sub(r"[^a-zA-Z.,!\s]", "*", cleaned)
-    cleaned = normalizeWildcards(cleaned, "*", set(".,!"), set(".,!"))
-    
-    # Replace all keywords to their proper wording (e.g. "f*dge" -> "fudge")
-    matches = findMatchingSubstringsWithWildcardsAndReplacement(cleaned, word_set, "*")
-    for k, v in matches.items():
-        cleaned = cleaned.replace(k, v)
     
     return cleaned
 
