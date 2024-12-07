@@ -32,11 +32,13 @@ function App() {
     const nextTime = parseInt(localStorage.getItem("nextTime"));
     const currentTime = Date.now();
 
+    // Check if limit is depleted
     if (limit < 1 && currentTime < nextTime) {
       alert("Limit exceeded");
       return;
     }
 
+    // Time and limit resets
     if (currentTime >= nextTime) {
       localStorage.setItem("limit", "100");
       const newNextTime = Date.now() + 60 * 60 * 1000;
@@ -50,7 +52,8 @@ function App() {
         setResultColor(result === "toxic" ? "red" : "green");
       });
 
-    localStorage.setItem("limit", (limit - 1).toString());
+    // Decrement limit
+    // localStorage.setItem("limit", (limit - 1).toString());
   }
 
   function tryGetCategory() {
