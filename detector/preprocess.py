@@ -130,6 +130,9 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
     # Remove non-alphabet words (e.g. "$100" or "2024")
     text = " ".join([word for word in text.split() if re.search(r'[a-zA-Z]', word)])
     
+    # Set to lowercase
+    text = text.lower()
+    
     # Expand contractions (e.g. "you're" -> "you are")
     text = contractions.fix(text)
     
@@ -157,7 +160,7 @@ def cleanText(text: str, word_set, stopword_set, tokenizer) -> str:
 
 def main():
     nlp = spacy.load("en_core_web_md", disable=["parser", "ner", "tagger", "lemmatizer", "textcat"])
-    print(cleanText("f*ck you nniiiiggggaaaa", {"nigga", "fuck"}, {}, nlp))
+    print(cleanText("F$ck", {"nigga", "fuck"}, {}, nlp))
 
 if __name__ == "__main__":
     main()
