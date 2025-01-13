@@ -91,7 +91,7 @@ def main():
     if not Path(feedback_data_file).is_absolute():
         feedback_data_file = Path(source_dir).joinpath(feedback_data_file).resolve()
     
-    parser = argparse.ArgumentParser("Bad Comment Detector")
+    parser = argparse.ArgumentParser("Bad Comment Detector", add_help=False)
     parser.add_argument("-t", dest="text", metavar="Text", nargs='+', required=False, type=str, help="Comment to detect")
     parser.add_argument("--no-rule", dest="rule", action="store_false", required=False, help="Disable Rule-based filter")
     parser.add_argument("--no-ai", dest="ai", action="store_false", required=False, help="Disable AI filter")
@@ -101,8 +101,13 @@ def main():
     parser.add_argument("-o", "--output", dest="output", nargs=1, type=str, required=False, help="Output to file. (e.g. 'output.json`)")
     parser.add_argument("--set-threshold", dest="threshold", nargs=1, type=int, required=False, help="Set toxicity threshold from 0-100")
     parser.add_argument("--set-feedback-file", dest="feedback_file", nargs=1, type=str, required=False, help="Set CSV file to put feedback")
+    parser.add_argument('-h', '--help', action='store_true', help='Show this help message and exit.')
     
     args = parser.parse_args()
+    
+    if args.help:
+        parser.print_help()
+        return
     
     if args.threshold:
         config["threshold"] = args.threshold[0]
