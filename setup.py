@@ -16,5 +16,12 @@ setup(
         'fastapi>=0.115.5'
         # Add more dependencies as required
     ],
-    packages=find_packages(include=['detector'])
+    python_requires=">=3.12",
+    entry_points={
+      "console_scripts": [
+          "bcd=detector.main:main"
+      ]  
+    },
+    packages=find_packages(include=['detector']),
+    include_package_data=True
 )
