@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='Bad-Comment-Detector',
-    version='0.1.0-alpha',
+    version='0.2.1-alpha',
     author='Scrappyz',
     author_email='ghostmic3000@gmail.com',
     description='A bad comment detector using both rule-based and AI methods.',
@@ -16,12 +16,7 @@ setup(
         'fastapi>=0.115.5'
         # Add more dependencies as required
     ],
-    python_requires=">=3.12",
-    entry_points={
-      "console_scripts": [
-          "bcd=detector.main:main"
-      ]  
-    },
+    python_requires=">=3.12"
     packages=find_packages(include=['detector']),
     include_package_data=True
 )
